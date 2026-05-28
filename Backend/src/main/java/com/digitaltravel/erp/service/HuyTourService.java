@@ -89,6 +89,8 @@ public class HuyTourService {
         yc.setTrangThai("CHUA_XU_LY");
         yeuCauHoTroRepository.save(yc);
 
+        taoGiaoDichHoanTienNeuChuaCo(don, soTienHoan);
+
         // Đổi trạng thái đơn sang CHO_HUY
         don.setTrangThai("CHO_HUY");
         donDatTourRepository.save(don);
@@ -110,15 +112,7 @@ public class HuyTourService {
 
         // Tạo giao dịch hoàn tiền chờ kế toán xác nhận; đơn vẫn giữ chỗ ở CHO_HUY.
         BigDecimal soTienHoan = tinhSoTienHoanTuNoiDung(yc.getNoiDung(), don.getTongTien());
-        GiaoDich gdHoan = new GiaoDich();
-        gdHoan.setMaGiaoDich("GD_HOAN_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        gdHoan.setDonDatTour(don);
-        gdHoan.setLoaiGiaoDich("HOAN_TIEN");
-        gdHoan.setPhuongThuc("CHUYEN_KHOAN");
-        gdHoan.setSoTien(soTienHoan);
-        gdHoan.setTrangThai("CHO_THANH_TOAN");
-        gdHoan.setNgayThanhToan(LocalDateTime.now());
-        giaoDichRepository.save(gdHoan);
+        taoGiaoDichHoanTienNeuChuaCo(don, soTienHoan);
 
         // Cập nhật yêu cầu; đơn chỉ thành DA_HUY khi kế toán xác nhận hoàn tiền.
         don.setTrangThai("CHO_HUY");
@@ -183,6 +177,22 @@ public class HuyTourService {
         } catch (Exception ignored) {
             /* fallback */ }
         return BigDecimal.ZERO;
+    }
+
+    private void taoGiaoDichHoanTienNeuChuaCo(DonDatTour don, BigDecimal soTienHoan) {
+        if (giaoDichRepository.findPendingRefundByMaDatTour(don.getMaDatTour()).isPresent()) {
+            return;
+        }
+
+        GiaoDich gdHoan = new GiaoDich();
+        gdHoan.setMaGiaoDich("GD_HOAN_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        gdHoan.setDonDatTour(don);
+        gdHoan.setLoaiGiaoDich("HOAN_TIEN");
+        gdHoan.setPhuongThuc("CHUYEN_KHOAN");
+        gdHoan.setSoTien(soTienHoan);
+        gdHoan.setTrangThai("CHO_THANH_TOAN");
+        gdHoan.setNgayThanhToan(LocalDateTime.now());
+        giaoDichRepository.save(gdHoan);
     }
 
     private YeuCauHoTroResponse toResponse(YeuCauHoTro yc, BigDecimal soTienHoan, int tiLeHoan) {

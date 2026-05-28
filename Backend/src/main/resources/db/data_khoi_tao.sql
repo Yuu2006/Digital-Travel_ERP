@@ -1,20 +1,4 @@
-﻿-- ============================================================
--- SEED DATA LIEN KET - Tour, khach hang, HDV, dieu hanh
--- Chay sau:
---   @src/main/resources/db/KhoiTaoBang.sql
---   @src/main/resources/db/data_v1.sql
---
--- Ghi chu nghiep vu:
--- - TOURTHUCTE khong co FK truc tiep den nhan vien dieu hanh.
--- - Seed nay the hien nguoi dieu hanh bang NHATKYHETHONG:
---   TK_MGR01 / NV_MGR01 ghi nhan THEM/CAP_NHAT tren tung TOURTHUCTE.
--- - Ten TOURMAU dung dinh dang: Dia diem - tieu de.
--- ============================================================
-
--- ------------------------------------------------------------
--- 0. RESET DU LIEU LIEN KET NEU CHAY LAI SCRIPT
--- ------------------------------------------------------------
-UPDATE TOURTHUCTE
+﻿UPDATE TOURTHUCTE
 SET TrangThai = 'KET_THUC'
 WHERE MaTourThucTe LIKE 'TTT_%'
   AND TrangThai = 'DA_QUYET_TOAN';
@@ -658,25 +642,6 @@ VALUES ('KH_05', 'VC_DIEMXANH800', TRUNC(SYSDATE) + 90, SYSTIMESTAMP - INTERVAL 
 -- ------------------------------------------------------------
 -- 5. DON DAT TOUR - DU 7 TRANG THAI DON DAT
 -- ------------------------------------------------------------
--- Fix trigger TRG_KT_TOUR_MO_BAN de ho tro viec insert du lieu qua khu
-CREATE OR REPLACE TRIGGER TRG_KT_TOUR_MO_BAN
-BEFORE INSERT ON DONDATTOUR
-FOR EACH ROW
-DECLARE
-    v_Count NUMBER;
-BEGIN
-    SELECT COUNT(*)
-    INTO v_Count
-    FROM TOURTHUCTE
-    WHERE MaTourThucTe = :NEW.MaTourThucTe
-      AND TrangThai = 'MO_BAN'
-      AND NgayKhoiHanh > :NEW.NgayDat;
-
-    IF v_Count = 0 THEN
-        RAISE_APPLICATION_ERROR(-20007, 'Chỉ được đặt tour đang MO_BAN và chưa khởi hành');
-    END IF;
-END;
-/
 
 INSERT INTO DONDATTOUR (MaDatTour, MaTourThucTe, MaKhachHang, NgayDat, TongTien, TrangThai, ThoiGianHetHan, GhiChu, HanhDongXanh)
 VALUES ('DDT_CHO_XN', 'TTT_MB', 'KH_01', SYSTIMESTAMP - INTERVAL '1' DAY, 10250000, 'CHO_XAC_NHAN',

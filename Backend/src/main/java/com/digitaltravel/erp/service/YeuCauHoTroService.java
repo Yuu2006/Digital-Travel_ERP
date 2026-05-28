@@ -246,12 +246,22 @@ public class YeuCauHoTroService {
 
     // ── Mapper ───────────────────────────────────────────────────────────────
     public YeuCauHoTroResponse toResponse(YeuCauHoTro yc) {
+        String trangThai = yc.getTrangThai();
+        if ("HUY_TOUR".equals(yc.getLoaiYeuCau()) && yc.getDonDatTour() != null) {
+            String trangThaiDon = yc.getDonDatTour().getTrangThai();
+            if ("DA_HUY".equals(trangThaiDon)) {
+                trangThai = "DA_XU_LY";
+            } else if ("TU_CHOI_HOAN_TIEN".equals(trangThaiDon)) {
+                trangThai = "TU_CHOI";
+            }
+        }
+
         return YeuCauHoTroResponse.builder()
                 .maYeuCau(yc.getMaYeuCauHoTro())
                 .maDatTour(yc.getDonDatTour() != null ? yc.getDonDatTour().getMaDatTour() : null)
                 .loaiYeuCau(yc.getLoaiYeuCau())
                 .noiDung(yc.getNoiDung())
-                .trangThai(yc.getTrangThai())
+                .trangThai(trangThai)
                 .maNhanVienXuLy(yc.getNhanVienXuLy() != null ? yc.getNhanVienXuLy().getMaNhanVien() : null)
                 .build();
     }

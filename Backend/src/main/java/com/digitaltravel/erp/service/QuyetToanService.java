@@ -21,6 +21,7 @@ import com.digitaltravel.erp.entity.GiaoDich;
 import com.digitaltravel.erp.entity.NhanVien;
 import com.digitaltravel.erp.entity.QuyetToan;
 import com.digitaltravel.erp.entity.TourThucTe;
+import com.digitaltravel.erp.entity.YeuCauHoTro;
 import com.digitaltravel.erp.exception.AppException;
 import com.digitaltravel.erp.repository.ChiPhiThucTeRepository;
 import com.digitaltravel.erp.repository.ChiTietDatTourRepository;
@@ -29,6 +30,7 @@ import com.digitaltravel.erp.repository.GiaoDichRepository;
 import com.digitaltravel.erp.repository.NhanVienRepository;
 import com.digitaltravel.erp.repository.QuyetToanRepository;
 import com.digitaltravel.erp.repository.TourThucTeRepository;
+import com.digitaltravel.erp.repository.YeuCauHoTroRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +48,7 @@ public class QuyetToanService {
     private final ChiPhiThucTeRepository chiPhiThucTeRepository;
     private final GiaoDichRepository giaoDichRepository;
     private final ChiTietDatTourRepository chiTietDatTourRepository;
+    private final YeuCauHoTroRepository yeuCauHoTroRepository;
 
     // ── UC47: Danh sách tour cần quyết toán (đã kết thúc, chưa quyết toán)
     @Transactional(readOnly = true)
@@ -237,6 +240,7 @@ public class QuyetToanService {
 
         don.setTrangThai("DA_HUY");
         donDatTourRepository.save(don);
+        capNhatYeuCauHuyTour(don, "DA_XU_LY", "Da hoan tien thanh cong");
 
         return ThanhToanResponse.builder()
                 .maGiaoDich(gd.getMaGiaoDich())
@@ -272,6 +276,7 @@ public class QuyetToanService {
 
         don.setTrangThai("TU_CHOI_HOAN_TIEN");
         donDatTourRepository.save(don);
+        capNhatYeuCauHuyTour(don, "TU_CHOI", "Tu choi hoan tien");
 
         return ThanhToanResponse.builder()
                 .maGiaoDich(gd.getMaGiaoDich())
@@ -305,6 +310,16 @@ public class QuyetToanService {
             throw AppException.badRequest("Tour chưa kết thúc, không thể quyết toán.");
         }
         return tour;
+    }
+
+    private void capNhatYeuCauHuyTour(DonDatTour don, String trangThai, String ghiChu) {
+        List<YeuCauHoTro> yeuCauHuyTour = yeuCauHoTroRepository
+                .findByMaDatTourAndLoaiYeuCau(don.getMaDatTour(), "HUY_TOUR");
+        yeuCauHuyTour.forEach(yc -> {
+            yc.setTrangThai(trangThai);
+            yc.setNoiDung(appendNote(yc.getNoiDung(), ghiChu + " luc " + LocalDateTime.now()));
+            yeuCauHoTroRepository.save(yc);
+        });
     }
 
     private BigDecimal tinhDoanhThu(String maTour) {

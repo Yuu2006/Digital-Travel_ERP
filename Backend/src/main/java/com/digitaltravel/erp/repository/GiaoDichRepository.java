@@ -36,6 +36,14 @@ public interface GiaoDichRepository extends JpaRepository<GiaoDich, String> {
     @Query("SELECT g FROM GiaoDich g WHERE g.donDatTour.maDatTour = :maDatTour AND g.trangThai = 'THANH_CONG'")
     Optional<GiaoDich> findThanhCongByMaDatTour(@Param("maDatTour") String maDatTour);
 
+    @Query("""
+            SELECT g FROM GiaoDich g
+            WHERE g.donDatTour.maDatTour = :maDatTour
+              AND g.loaiGiaoDich = 'HOAN_TIEN'
+              AND g.trangThai = 'CHO_THANH_TOAN'
+            """)
+    Optional<GiaoDich> findPendingRefundByMaDatTour(@Param("maDatTour") String maDatTour);
+
     // UC50: Lấy giao dịch chờ hoàn tiền
     @Query("""
             SELECT g FROM GiaoDich g
