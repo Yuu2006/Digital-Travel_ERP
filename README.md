@@ -184,8 +184,8 @@ ALTER USER ERP_APP QUOTA UNLIMITED ON USERS;
 
 ```sql
 @Backend/src/main/resources/db/KhoiTaoBang.sql
-@Backend/src/main/resources/db/data_v1.sql
-@Backend/src/main/resources/db/data_lien_ket.sql
+@Backend/src/main/resources/db/Data_tai_khoan.sql
+@Backend/src/main/resources/db/data_khoi_tao.sql
 ```
 
 Ý nghĩa các file:

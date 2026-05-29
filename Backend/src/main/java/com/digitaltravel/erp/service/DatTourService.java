@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.digitaltravel.erp.dto.requests.DatTourRequest;
@@ -82,7 +83,7 @@ public class DatTourService {
     private final DanhGiaKhRepository danhGiaKhRepository;
 
     // ── Đặt tour ────────────────────────────────────────────────────────────
-    @Transactional
+    @Transactional ()
     public DonDatTourResponse datTour(String maTaiKhoan, DatTourRequest request) {
         HoChieuSo khachHang = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Khách hàng chưa có hồ sơ. Vui lòng liên hệ hỗ trợ."));
