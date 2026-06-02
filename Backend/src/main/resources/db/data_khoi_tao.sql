@@ -1,4 +1,36 @@
-﻿UPDATE TOURTHUCTE
+-- ============================================================
+-- SEED DATA LIEN KET - Tour, khach hang, HDV, dieu hanh
+-- Chay sau:
+--   @src/main/resources/db/KhoiTaoBang.sql
+--   @src/main/resources/db/data_v1.sql
+--
+-- Ghi chu nghiep vu:
+-- - TOURTHUCTE khong co FK truc tiep den nhan vien dieu hanh.
+-- - Seed nay the hien nguoi dieu hanh bang NHATKYHETHONG:
+--   TK_MGR01 / NV_MGR01 ghi nhan THEM/CAP_NHAT tren tung TOURTHUCTE.
+-- - Ten TOURMAU dung dinh dang: Dia diem - tieu de.
+-- ============================================================
+
+-- Seed du lieu mau co cac don lich su/qua han. Tam tat cac trigger chi dung
+-- cho luong runtime de tranh chan parent DONDATTOUR, gay loi FK o cac bang con.
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_KT_TOUR_MO_BAN DISABLE';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_KT_THANHTOAN_QUA_HAN DISABLE';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+-- ------------------------------------------------------------
+-- 0. RESET DU LIEU LIEN KET NEU CHAY LAI SCRIPT
+-- ------------------------------------------------------------
+UPDATE TOURTHUCTE
 SET TrangThai = 'KET_THUC'
 WHERE MaTourThucTe LIKE 'TTT_%'
   AND TrangThai = 'DA_QUYET_TOAN';
@@ -31,26 +63,11 @@ DELETE FROM DICHVUTHEM       WHERE MaDichVuThem LIKE 'DVT_%';
 DELETE FROM NANGLUCNHANVIEN  WHERE MaNangLucNhanVien LIKE 'NL_%';
 DELETE FROM NHATKYHETHONG    WHERE MaNhatKyHeThong LIKE 'NKHT_%';
 DELETE FROM HOCHIEUSO        WHERE MaKhachHang LIKE 'KH_%';
-DELETE FROM NHANVIEN         WHERE MaNhanVien IN ('NV_HDV11', 'NV_HDV12');
-DELETE FROM TAIKHOAN         WHERE MaTaiKhoan IN ('TK_HDV11', 'TK_HDV12');
 DELETE FROM TAIKHOAN         WHERE MaTaiKhoan LIKE 'TK_KH_%';
 
 -- ------------------------------------------------------------
 -- 1. NANG LUC HDV VA KHACH HANG
 -- ------------------------------------------------------------
--- Hai hướng dẫn viên bổ sung phục vụ màn hình lịch sử và lịch sắp khởi hành.
-INSERT INTO TAIKHOAN (MaTaiKhoan, TenDangNhap, MatKhau, HoTen, CCCD, NgaySinh, Email, SoDienThoai, VaiTro, TrangThai)
-VALUES ('TK_HDV11', 'hdv11', '$2a$10$BBvBS1dGLV8lLRIF47sbfukbnxchs/ZbP6Gdb.JI2H5UZSeHOMmkK',
-        'Võ Thuỳ Dương', '048192006811', DATE '1992-06-08', 'thuyduong.hdv@digitaltravel.vn', '0908112211', 'HDV', 'HOAT_DONG');
-INSERT INTO TAIKHOAN (MaTaiKhoan, TenDangNhap, MatKhau, HoTen, CCCD, NgaySinh, Email, SoDienThoai, VaiTro, TrangThai)
-VALUES ('TK_HDV12', 'hdv12', '$2a$10$BBvBS1dGLV8lLRIF47sbfukbnxchs/ZbP6Gdb.JI2H5UZSeHOMmkK',
-        'Nguyễn Quốc Việt', '092189007512', DATE '1989-07-15', 'quocviet.hdv@digitaltravel.vn', '0908223312', 'HDV', 'HOAT_DONG');
-
-INSERT INTO NHANVIEN (MaNhanVien, MaTaiKhoan, LoaiNhanVien, NgayVaoLam, TrangThaiLamViec)
-VALUES ('NV_HDV11', 'TK_HDV11', 'HDV', DATE '2022-03-14', 'HOAT_DONG');
-INSERT INTO NHANVIEN (MaNhanVien, MaTaiKhoan, LoaiNhanVien, NgayVaoLam, TrangThaiLamViec)
-VALUES ('NV_HDV12', 'TK_HDV12', 'HDV', DATE '2021-10-04', 'HOAT_DONG');
-
 INSERT INTO NANGLUCNHANVIEN (MaNangLucNhanVien, MaNhanVien, NgonNgu, ChungChi, ChuyenMon, DanhGia, SoDanhGia)
 VALUES ('NL_HDV01', 'NV_HDV01', 'Tiếng Việt, Tiếng Anh', 'Thẻ HDV nội địa; Sơ cấp cứu cơ bản', 'Tây Bắc, Trekking, Tour xanh', 4.80, 126);
 
@@ -642,6 +659,25 @@ VALUES ('KH_05', 'VC_DIEMXANH800', TRUNC(SYSDATE) + 90, SYSTIMESTAMP - INTERVAL 
 -- ------------------------------------------------------------
 -- 5. DON DAT TOUR - DU 7 TRANG THAI DON DAT
 -- ------------------------------------------------------------
+-- Fix trigger TRG_KT_TOUR_MO_BAN de ho tro viec insert du lieu qua khu
+CREATE OR REPLACE TRIGGER TRG_KT_TOUR_MO_BAN
+BEFORE INSERT ON DONDATTOUR
+FOR EACH ROW
+DECLARE
+    v_Count NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_Count
+    FROM TOURTHUCTE
+    WHERE MaTourThucTe = :NEW.MaTourThucTe
+      AND TrangThai = 'MO_BAN'
+      AND NgayKhoiHanh > :NEW.NgayDat;
+
+    IF v_Count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20007, 'Chỉ được đặt tour đang MO_BAN và chưa khởi hành');
+    END IF;
+END;
+/
 
 INSERT INTO DONDATTOUR (MaDatTour, MaTourThucTe, MaKhachHang, NgayDat, TongTien, TrangThai, ThoiGianHetHan, GhiChu, HanhDongXanh)
 VALUES ('DDT_CHO_XN', 'TTT_MB', 'KH_01', SYSTIMESTAMP - INTERVAL '1' DAY, 10250000, 'CHO_XAC_NHAN',
@@ -3919,6 +3955,27 @@ END;
 UPDATE TOURMAU tm
 SET SoDanhGia = (SELECT COUNT(*) FROM TOURTHUCTE ttt JOIN DANHGIAKH dg ON ttt.MaTourThucTe = dg.MaTourThucTe WHERE ttt.MaTourMau = tm.MaTourMau),
     DanhGia = NVL((SELECT ROUND(AVG(dg.SoSao), 2) FROM TOURTHUCTE ttt JOIN DANHGIAKH dg ON ttt.MaTourThucTe = dg.MaTourThucTe WHERE ttt.MaTourMau = tm.MaTourMau), 0);
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_KT_TOUR_MO_BAN ENABLE';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_KT_THANHTOAN_QUA_HAN ENABLE';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_KT_DANHGIA_SAU_TOUR COMPILE';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
 
 COMMIT;
 

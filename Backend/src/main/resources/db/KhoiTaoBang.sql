@@ -1,3 +1,12 @@
+-- ============================================================
+-- Digital Travel ERP - Oracle DDL
+-- Sinh tu skill  : oracle-create-table
+-- Nguon logic    : docs_source/motaDatabase.md
+-- Naming mode    : logical-name (PascalCase Vietnamese business cols)
+-- Audit columns  : none
+-- Cap nhat       : 2026-04-02
+-- ============================================================
+
 -- ------------------------------------------------------------
 -- DROP TABLE (thu tu nguoc phu thuoc FK)
 -- ------------------------------------------------------------
@@ -1015,10 +1024,10 @@ BEGIN
     FROM TOURTHUCTE
     WHERE MaTourThucTe = :NEW.MaTourThucTe
       AND TrangThai = 'MO_BAN'
-      AND NgayKhoiHanh > :NEW.NgayDat;
+      AND NgayKhoiHanh > SYSDATE;
 
     IF v_Count = 0 THEN
-        RAISE_APPLICATION_ERROR(-20007, 'Chỉ được đặt tour đang MO_BAN và chưa khởi hành');
+        RAISE_APPLICATION_ERROR(-20007, 'Chi duoc dat tour dang MO_BAN va chua khoi hanh');
     END IF;
 END;
 /
@@ -1265,6 +1274,3 @@ BEGIN
     :NEW.LoiNhuan := :NEW.TongDoanhThu - :NEW.TongChiPhi;
 END;
 /
-
-
-SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;

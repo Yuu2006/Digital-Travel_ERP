@@ -109,6 +109,13 @@ VALUES ('TK_HDV10', 'hdv10',
         'Ngô Thanh Vy', '079099000014', DATE '1996-01-19', 'hdv10@digitaltravel.vn', '0900000014',
         'HDV', 'HOAT_DONG');
 
+INSERT INTO TAIKHOAN (MaTaiKhoan, TenDangNhap, MatKhau, HoTen, CCCD, NgaySinh, Email, SoDienThoai, VaiTro, TrangThai)
+VALUES ('TK_HDV11', 'hdv11', '$2a$10$BBvBS1dGLV8lLRIF47sbfukbnxchs/ZbP6Gdb.JI2H5UZSeHOMmkK',
+        'Võ Thuỳ Dương', '048192006811', DATE '1992-06-08', 'thuyduong.hdv@digitaltravel.vn', '0908112211', 'HDV', 'HOAT_DONG');
+INSERT INTO TAIKHOAN (MaTaiKhoan, TenDangNhap, MatKhau, HoTen, CCCD, NgaySinh, Email, SoDienThoai, VaiTro, TrangThai)
+VALUES ('TK_HDV12', 'hdv12', '$2a$10$BBvBS1dGLV8lLRIF47sbfukbnxchs/ZbP6Gdb.JI2H5UZSeHOMmkK',
+        'Nguyễn Quốc Việt', '092189007512', DATE '1989-07-15', 'quocviet.hdv@digitaltravel.vn', '0908223312', 'HDV', 'HOAT_DONG');
+
 -- ------------------------------------------------------------
 -- 3. NHANVIEN — Hồ sơ nhân viên nội bộ
 -- ------------------------------------------------------------
@@ -142,6 +149,10 @@ INSERT INTO NHANVIEN (MaNhanVien, MaTaiKhoan, LoaiNhanVien, NgayVaoLam, TrangTha
 VALUES ('NV_HDV09',    'TK_HDV09',    'HDV',       DATE '2021-06-12', 'HOAT_DONG');
 INSERT INTO NHANVIEN (MaNhanVien, MaTaiKhoan, LoaiNhanVien, NgayVaoLam, TrangThaiLamViec)
 VALUES ('NV_HDV10',    'TK_HDV10',    'HDV',       DATE '2023-07-01', 'HOAT_DONG');
+INSERT INTO NHANVIEN (MaNhanVien, MaTaiKhoan, LoaiNhanVien, NgayVaoLam, TrangThaiLamViec)
+VALUES ('NV_HDV11', 'TK_HDV11', 'HDV', DATE '2022-03-14', 'HOAT_DONG');
+INSERT INTO NHANVIEN (MaNhanVien, MaTaiKhoan, LoaiNhanVien, NgayVaoLam, TrangThaiLamViec)
+VALUES ('NV_HDV12', 'TK_HDV12', 'HDV', DATE '2021-10-04', 'HOAT_DONG');
 
 -- ------------------------------------------------------------
 -- 4. NANGLUCNHANVIEN — Đánh giá và năng lực
