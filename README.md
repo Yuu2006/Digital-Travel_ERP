@@ -10,10 +10,10 @@
 
 | Thành phần | Repository nguồn | Branch |
 |---|---|---|
-| Backend | [Yuu2006/Do-An-TravelERP](https://github.com/Yuu2006/Do-An-TravelERP) | `main` |
+| Backend | [Yuu2006/Backend-TravelERP](https://github.com/Yuu2006/Backend-TravelERP) | `main` |
 | Frontend Admin | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `main` |
-| Frontend HDV | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `ui-ux/hdv` |
-| Frontend Khách hàng | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `ui-ux/KH` |
+| Frontend HDV | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `main` |
+| Frontend Khách hàng | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `main` |
 
 ---
 
