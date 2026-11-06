@@ -57,7 +57,7 @@ class VoucherServiceTest {
     void taoVoucher_taoMoiThanhCong() {
         VoucherRequest request = taoRequest("SUMMER10", "PHAN_TRAM", BigDecimal.TEN,
                 "Ap dung cho don hang tu 1 trieu", 100,
-                LocalDate.of(2026, 6, 1), LocalDate.of(2026, 6, 30));
+                LocalDate.now().minusDays(1), LocalDate.now().plusDays(30));
         setField(request, "mucGiamToiDa", BigDecimal.valueOf(500_000));
         when(voucherRepository.findByMaCode("SUMMER10")).thenReturn(Optional.empty());
         when(voucherRepository.findMaxVoucherNumber()).thenReturn(0);
