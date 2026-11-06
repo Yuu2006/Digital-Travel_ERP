@@ -22,7 +22,7 @@ public class NangLucService {
     private final NangLucNhanVienRepository nangLucNhanVienRepository;
     private final NhanVienRepository nhanVienRepository;
 
-    // ── UC63: Xem năng lực nhân viên ─────────────────────────────────────────
+    // UC63 - Cập nhật năng lực nhân viên: Lấy năng lực nhân viên
     public NangLucResponse layNangLuc(String maNhanVien) {
         NangLucNhanVien nl = nangLucNhanVienRepository.findByMaNhanVien(maNhanVien)
                 .orElse(null);
@@ -39,8 +39,8 @@ public class NangLucService {
         return toResponse(nl);
     }
 
-    // ── UC63: Cập nhật năng lực nhân viên (Manager/Admin) ────────────────────
     @Transactional
+    // UC63 - Cập nhật năng lực nhân viên: Cập nhật năng lực
     public NangLucResponse capNhatNangLuc(String maNhanVien, NangLucRequest request, String nguoiCapNhat) {
         NhanVien nv = nhanVienRepository.findById(maNhanVien)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay nhan vien: " + maNhanVien));

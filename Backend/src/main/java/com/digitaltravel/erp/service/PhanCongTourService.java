@@ -37,8 +37,8 @@ public class PhanCongTourService {
     private final HanhDongRepository hanhDongRepository;
     private final DonDatTourRepository donDatTourRepository;
 
-    // ── UC38: Tìm HDV khả dụng ────────────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC38 - Tra cứu HDV: Tìm HDV khả dụng
     public List<NhanVienResponse> timHdvKhaDung(String maTourThucTe) {
         TourThucTe tour = tourThucTeRepository.findById(maTourThucTe)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour: " + maTourThucTe));
@@ -54,8 +54,8 @@ public class PhanCongTourService {
                 .toList();
     }
 
-    // ── UC37: Phân công HDV ────────────────────────────────────────────────
     @Transactional
+    // UC37 - Điều phối HDV: Tạo phân công tour
     public PhanCongResponse phanCong(PhanCongHdvRequest request) {
         TourThucTe tour = tourThucTeRepository.findById(request.getMaTourThucTe())
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour: " + request.getMaTourThucTe()));
@@ -98,8 +98,8 @@ public class PhanCongTourService {
         return toResponse(pc);
     }
 
-    // ── HDV phản hồi phân công ───────────────────────────────────────────
     @Transactional
+    // UC37 - Điều phối HDV: HDV đồng ý phân công
     public PhanCongResponse dongYPhanCong(String maPhanCong, String maTaiKhoan) {
         PhanCongTour pc = layPhanCongCuaHdv(maPhanCong, maTaiKhoan);
         if (!"CHO_PHAN_HOI".equals(pc.getTrangThaiChapNhan())) {
@@ -117,6 +117,7 @@ public class PhanCongTourService {
     }
 
     @Transactional
+    // UC37 - Điều phối HDV: HDV từ chối phân công
     public PhanCongResponse tuChoiPhanCong(String maPhanCong, String maTaiKhoan) {
         PhanCongTour pc = layPhanCongCuaHdv(maPhanCong, maTaiKhoan);
         if (!"CHO_PHAN_HOI".equals(pc.getTrangThaiChapNhan())) {
@@ -140,8 +141,8 @@ public class PhanCongTourService {
         return pc;
     }
 
-    // ── Hủy phân công ─────────────────────────────────────────────────────
     @Transactional
+    // UC37 - Điều phối HDV: Hủy phân công tour
     public void huyPhanCong(String maPhanCong) {
         PhanCongTour pc = phanCongTourRepository.findById(maPhanCong)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay phan cong: " + maPhanCong));
@@ -166,8 +167,8 @@ public class PhanCongTourService {
         }
     }
 
-    // ── HDV xem tour của mình ─────────────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy tour của HDV
     public List<PhanCongResponse> tourCuaToi(String maTaiKhoan) {
         NhanVien hdv = nhanVienRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ nhân viên"));
@@ -176,8 +177,8 @@ public class PhanCongTourService {
                 .toList();
     }
 
-    // ── Điều hành xem lịch công tác của 1 nhân viên cụ thể ───────────────
     @Transactional(readOnly = true)
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy lịch công tác
     public List<PhanCongResponse> lichCongTacNhanVien(String maNhanVien) {
         return phanCongTourRepository.findByMaNhanVien(maNhanVien).stream()
                 .map(this::toResponse)

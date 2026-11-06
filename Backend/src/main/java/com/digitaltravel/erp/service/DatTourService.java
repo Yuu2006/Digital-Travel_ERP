@@ -13,7 +13,6 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.digitaltravel.erp.dto.requests.DatTourRequest;
@@ -82,8 +81,8 @@ public class DatTourService {
     private final YeuCauHoTroRepository yeuCauHoTroRepository;
     private final DanhGiaKhRepository danhGiaKhRepository;
 
-    // ── Đặt tour ────────────────────────────────────────────────────────────
-    @Transactional ()
+    @Transactional
+    // UC27 - Đặt tour: Tạo đơn và giữ chỗ tạm thời
     public DonDatTourResponse datTour(String maTaiKhoan, DatTourRequest request) {
         HoChieuSo khachHang = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Khách hàng chưa có hồ sơ. Vui lòng liên hệ hỗ trợ."));
@@ -139,8 +138,8 @@ public class DatTourService {
         return toResponse(don, dsChiTiet, dsDichVu);
     }
 
-    // ── Danh sách đơn đặt tour của tôi ─────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC22 - Xem chi tiết lịch sử hành trình: Lấy đơn của khách
     public Page<DonDatTourResponse> danhSachCuaToi(String maTaiKhoan, Pageable pageable) {
         HoChieuSo khachHang = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -153,8 +152,8 @@ public class DatTourService {
                 });
     }
 
-    // ── Chi tiết đơn đặt tour của tôi ──────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC22 - Xem chi tiết lịch sử hành trình: Xem chi tiết đơn
     public DonDatTourResponse chiTietCuaToi(String maTaiKhoan, String maDatTour) {
         HoChieuSo khachHang = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -167,8 +166,8 @@ public class DatTourService {
         return toResponse(don, dsChiTiet, dsDichVu);
     }
 
-    // ── Hủy đặt tour ────────────────────────────────────────────────────────
     @Transactional
+    // UC32 - Hủy tour: Hủy đơn chưa xác nhận
     public void huyDatTour(String maTaiKhoan, String maDatTour) {
         HoChieuSo khachHang = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -194,8 +193,8 @@ public class DatTourService {
         // Không cần hoàn ChoConLai vì chưa trừ (chưa thanh toán)
     }
 
-    // ── Nhân viên Sales: xem tất cả đơn ────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC34 - Tra cứu đơn hàng: Lọc đơn đặt tour
     public Page<DonDatTourResponse> danhSachTatCa(String trangThai, String maTourThucTe, Pageable pageable) {
         return donDatTourRepository.timKiem(trangThai, maTourThucTe, pageable)
                 .map(don -> {
@@ -205,8 +204,8 @@ public class DatTourService {
                 });
     }
 
-    // ── Nhân viên Sales: xác nhận đơn ──────────────────────────────────────
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Xác nhận giao dịch và giữ chỗ chính thức
     public DonDatTourResponse xacNhanDon(
             String maDatTour,
             String nguoiXacNhan,
@@ -264,11 +263,13 @@ public class DatTourService {
         return toResponse(don, dsChiTiet, dsDichVu);
     }
 
+    // UC29 - Thanh toán đơn hàng: Xác nhận đơn không kèm thông tin offline
     public DonDatTourResponse xacNhanDon(String maDatTour, String nguoiXacNhan) {
         return xacNhanDon(maDatTour, nguoiXacNhan, null);
     }
 
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Từ chối giao dịch chờ đối soát
     public DonDatTourResponse tuChoiThanhToan(String maDatTour) {
         DonDatTour don = donDatTourRepository.findByIdWithDetails(maDatTour)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay don dat tour: " + maDatTour));

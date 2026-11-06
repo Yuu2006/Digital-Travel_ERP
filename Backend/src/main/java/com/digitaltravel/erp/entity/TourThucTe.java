@@ -2,7 +2,6 @@ package com.digitaltravel.erp.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +50,8 @@ public class TourThucTe {
     @Column(name = "ChoConLai", nullable = false)
     Integer ChoConLai;
 
-    // Gia tri hop le: CHO_KICH_HOAT | MO_BAN | DANG_DIEN_RA | KET_THUC | HUY | DA_QUYET_TOAN
+    // Gia tri hop le: CHO_KICH_HOAT | MO_BAN | DANG_DIEN_RA | KET_THUC | HUY |
+    // DA_QUYET_TOAN
     @Column(name = "TrangThai", nullable = false, length = 20)
     String TrangThai;
 }

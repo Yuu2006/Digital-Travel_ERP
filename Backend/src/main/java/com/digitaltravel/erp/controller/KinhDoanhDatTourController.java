@@ -33,6 +33,7 @@ public class KinhDoanhDatTourController {
 
     @GetMapping("/dat-tour")
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC34 - Tra cứu đơn hàng: Lọc danh sách đơn đặt tour
     public ResponseEntity<ApiResponse<Page<DonDatTourResponse>>> danhSachTatCa(
             @RequestParam(required = false) String trangThai,
             @RequestParam(required = false) String maTourThucTe,
@@ -42,6 +43,7 @@ public class KinhDoanhDatTourController {
 
     @PutMapping("/dat-tour/{maDatTour}/xac-nhan")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN', 'KETOAN')")
+    // UC29 - Thanh toán đơn hàng: Xác nhận giao dịch và phát hành vé
     public ResponseEntity<ApiResponse<DonDatTourResponse>> xacNhanDon(
             @PathVariable String maDatTour,
             @AuthenticationPrincipal TaiKhoanDetails user,
@@ -52,6 +54,7 @@ public class KinhDoanhDatTourController {
 
     @PutMapping("/dat-tour/{maDatTour}/tu-choi-thanh-toan")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN', 'KETOAN')")
+    // UC29 - Thanh toán đơn hàng: Từ chối giao dịch chưa hợp lệ
     public ResponseEntity<ApiResponse<DonDatTourResponse>> tuChoiThanhToan(@PathVariable String maDatTour) {
         return ResponseEntity.ok(ApiResponse.ok("Đã từ chối thanh toán cho đơn đặt tour " + maDatTour,
                 datTourService.tuChoiThanhToan(maDatTour)));

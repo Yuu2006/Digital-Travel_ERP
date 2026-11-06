@@ -51,7 +51,7 @@ Chạy script DDL:
 Seed tài khoản nhân viên nếu cần:
 
 ```sql
-@src/main/resources/db/data_tai_khoan.sql
+@src/main/resources/db/data_v1.sql
 ```
 
 ### Chạy ứng dụng

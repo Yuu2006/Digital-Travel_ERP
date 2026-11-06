@@ -37,9 +37,9 @@ public class TourMauController {
 
     private final TourMauService tourMauService;
 
-    // UC06: Danh sách tour mẫu (filter + phân trang)
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC06 - Tra cứu tour mẫu: Lọc danh sách tour mẫu
     public ResponseEntity<ApiResponse<Page<TourMauResponse>>> danhSach(
             @RequestParam(required = false) String tieuDe,
             @RequestParam(required = false) Integer thoiLuongMin,
@@ -49,16 +49,16 @@ public class TourMauController {
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
-    // UC06: Chi tiết 1 tour mẫu + lịch trình
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC06 - Tra cứu tour mẫu: Xem chi tiết tour mẫu
     public ResponseEntity<ApiResponse<TourMauChiTietResponse>> chiTiet(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(tourMauService.chiTiet(id)));
     }
 
-    // UC02: Thêm tour mẫu
     @PostMapping
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC02 - Thêm mới tour mẫu: Lưu tour mẫu và lịch trình
     public ResponseEntity<ApiResponse<TourMauChiTietResponse>> taoMoi(
             @Valid @RequestBody TaoTourMauRequest request,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -66,9 +66,9 @@ public class TourMauController {
         return ResponseEntity.status(201).body(ApiResponse.created(result));
     }
 
-    // UC04: Sửa tour mẫu
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC04 - Sửa thông tin tour mẫu: Cập nhật tour mẫu
     public ResponseEntity<ApiResponse<TourMauResponse>> capNhat(
             @PathVariable String id,
             @Valid @RequestBody CapNhatTourMauRequest request,
@@ -77,17 +77,17 @@ public class TourMauController {
                 .ok(ApiResponse.ok("Cap nhat thanh cong", tourMauService.capNhat(id, request, user.getUsername())));
     }
 
-    // UC05: Xóa mềm tour mẫu
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC05 - Xóa tour mẫu: Xóa mềm tour mẫu
     public ResponseEntity<ApiResponse<Void>> xoa(@PathVariable String id) {
         tourMauService.xoaMem(id);
         return ResponseEntity.ok(ApiResponse.noContent("Xoa tour mau thanh cong (soft delete)"));
     }
 
-    // UC03: Sao chép tour mẫu
     @PostMapping("/{id}/sao-chep")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC03 - Sao chép tour mẫu: Tạo bản sao tour mẫu
     public ResponseEntity<ApiResponse<TourMauChiTietResponse>> saoChep(
             @PathVariable String id,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -95,9 +95,9 @@ public class TourMauController {
         return ResponseEntity.status(201).body(ApiResponse.created(result));
     }
 
-    // UC08: Thêm ngày lịch trình
     @PostMapping("/{id}/lich-trinh")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC08 - Thêm lịch trình tour: Thêm ngày lịch trình
     public ResponseEntity<ApiResponse<LichTrinhResponse>> themLichTrinh(
             @PathVariable String id,
             @Valid @RequestBody LichTrinhRequest request) {
@@ -105,9 +105,9 @@ public class TourMauController {
         return ResponseEntity.status(201).body(ApiResponse.created(result));
     }
 
-    // UC09: Sửa lịch trình
     @PutMapping("/{id}/lich-trinh/{maLichTrinh}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC09 - Sửa lịch trình tour: Cập nhật ngày lịch trình
     public ResponseEntity<ApiResponse<LichTrinhResponse>> suaLichTrinh(
             @PathVariable String id,
             @PathVariable String maLichTrinh,
@@ -116,9 +116,9 @@ public class TourMauController {
                 tourMauService.suaLichTrinh(id, maLichTrinh, request)));
     }
 
-    // UC09: Xóa ngày lịch trình
     @DeleteMapping("/{id}/lich-trinh/{maLichTrinh}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC09 - Sửa lịch trình tour: Xóa ngày lịch trình
     public ResponseEntity<ApiResponse<Void>> xoaLichTrinh(
             @PathVariable String id,
             @PathVariable String maLichTrinh) {

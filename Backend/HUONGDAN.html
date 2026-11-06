@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Travel ERP - Hướng Dẫn Dự Án</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --bg: #f6f7f2;
+      --paper: #ffffff;
+      --ink: #17211c;
+      --muted: #6e786f;
+      --line: #e3e7dc;
+      --soft: #eef4e8;
+      --navy: #102a43;
+      --green: #2f7d57;
+      --green-2: #dff0d8;
+      --blue: #2b6cb0;
+      --blue-2: #e4effa;
+      --gold: #b7791f;
+      --gold-2: #fff4d6;
+      --red: #b23b3b;
+      --red-2: #ffe8e8;
+      --radius: 20px;
+      --shadow: 0 18px 45px rgba(16, 42, 67, .08);
+      --shadow-sm: 0 8px 22px rgba(16, 42, 67, .06);
+      font-family: "Be Vietnam Pro", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(47, 125, 87, .14), transparent 28rem),
+        radial-gradient(circle at 92% 10%, rgba(43, 108, 176, .12), transparent 28rem),
+        var(--bg);
+      line-height: 1.62;
+    }
+
+    a { color: inherit; }
+
+    code {
+      padding: .14rem .38rem;
+      border-radius: 8px;
+      background: #f0f3ed;
+      color: #123928;
+      font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+      font-size: .92em;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(246, 247, 242, .84);
+      border-bottom: 1px solid rgba(227, 231, 220, .9);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--green), var(--blue));
+      box-shadow: var(--shadow-sm);
+      font-weight: 900;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .nav a {
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .nav a:hover {
+      color: var(--green);
+      background: var(--green-2);
+    }
+
+    .hero {
+      padding: 54px 0 34px;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid rgba(227, 231, 220, .9);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: clamp(28px, 5vw, 48px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      right: -80px;
+      bottom: -100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(47, 125, 87, .18), rgba(43, 108, 176, .14));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--green-2);
+      color: #245f43;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    h1 {
+      margin: 20px 0 16px;
+      max-width: 820px;
+      font-size: clamp(38px, 6vw, 76px);
+      line-height: .98;
+      letter-spacing: -.07em;
+      color: var(--navy);
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 15px;
+      border-radius: 13px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+
+    .btn.primary {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .btn.ghost {
+      background: #fff;
+      color: var(--navy);
+      border-color: var(--line);
+    }
+
+    .quick {
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .quick-item {
+      border-radius: 18px;
+      background: #fbfcf9;
+      border: 1px solid var(--line);
+      padding: 16px;
+    }
+
+    .quick-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .quick-item strong {
+      display: block;
+      color: var(--navy);
+      font-size: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    section { padding: 32px 0; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 22px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(26px, 3.4vw, 44px);
+      line-height: 1.06;
+      letter-spacing: -.05em;
+    }
+
+    .section-title p {
+      margin: 0;
+      max-width: 620px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two { grid-template-columns: repeat(2, 1fr); }
+    .grid.three { grid-template-columns: repeat(3, 1fr); }
+    .grid.four { grid-template-columns: repeat(4, 1fr); }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      line-height: 1.22;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .tag.green { background: var(--green-2); color: var(--green); }
+    .tag.blue { background: var(--blue-2); color: var(--blue); }
+    .tag.gold { background: var(--gold-2); color: var(--gold); }
+    .tag.red { background: var(--red-2); color: var(--red); }
+
+    .flowline {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      padding: 16px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-step {
+      min-height: 132px;
+      padding: 16px;
+      border-radius: 18px;
+      background: #fbfcf9;
+      border: 1px solid var(--line);
+      position: relative;
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      border-top: 2px solid var(--green);
+      border-right: 2px solid var(--green);
+      transform: translateY(-50%) rotate(45deg);
+      background: var(--paper);
+      z-index: 1;
+    }
+
+    .num {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .flow-step strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--navy);
+    }
+
+    .flow-step small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .layer-map {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .layer {
+      padding: 18px;
+      min-height: 155px;
+      border-radius: var(--radius);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .layer b {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .layer p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .module {
+      padding: 18px;
+      border-radius: var(--radius);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .module .role {
+      display: inline-block;
+      padding: 5px 8px;
+      border-radius: 9px;
+      background: var(--soft);
+      color: var(--green);
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: .04em;
+      margin-bottom: 12px;
+    }
+
+    .module h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 18px;
+    }
+
+    .module ul {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .module li::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 8px;
+      transform: translateY(-1px);
+    }
+
+    .api-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .api-block {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .api-block-head {
+      padding: 18px 18px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcf9;
+    }
+
+    .api-block-head h3 {
+      margin: 0 0 5px;
+      color: var(--navy);
+      font-size: 19px;
+    }
+
+    .api-block-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .api-block table {
+      box-shadow: none;
+      border: 0;
+    }
+
+    .table-card {
+      overflow-x: auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    th {
+      background: #fbfcf9;
+      color: var(--navy);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    td { color: #304138; font-size: 14px; }
+
+    .method {
+      display: inline-flex;
+      min-width: 58px;
+      justify-content: center;
+      padding: 4px 8px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 900;
+      background: var(--green-2);
+      color: var(--green);
+    }
+
+    .method.post { background: var(--blue-2); color: var(--blue); }
+    .method.put { background: var(--gold-2); color: var(--gold); }
+    .method.del { background: var(--red-2); color: var(--red); }
+
+    .endpoint {
+      font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+      color: var(--navy);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .account {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .account strong { display: block; color: var(--navy); }
+    .account span { display: block; color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+    .callout {
+      padding: 18px 20px;
+      border-radius: var(--radius);
+      background: #102a43;
+      color: #fff;
+      display: flex;
+      gap: 16px;
+      align-items: start;
+      box-shadow: var(--shadow);
+    }
+
+    .callout strong { display: block; margin-bottom: 4px; }
+    .callout p { margin: 0; color: rgba(255,255,255,.78); }
+
+    .footer {
+      padding: 34px 0 48px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1000px) {
+      .hero, .grid.two, .grid.three, .grid.four, .flowline, .layer-map, .module-grid, .account-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-step:not(:last-child)::after { display: none; }
+      .section-title { display: block; }
+      .section-title p { margin-top: 8px; }
+      .topbar .wrap { align-items: flex-start; flex-direction: column; }
+      .nav { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="brand"><span class="logo">DT</span> Digital Travel ERP</div>
+      <nav class="nav" aria-label="Điều hướng tài liệu">
+        <a href="#overview">Tổng quan</a>
+        <a href="#flow">Cách hoạt động</a>
+        <a href="#modules">Phân hệ</a>
+        <a href="#security">Phân quyền</a>
+        <a href="#api">API</a>
+        <a href="#database">CSDL</a>
+        <a href="#run">Chạy dự án</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview" class="wrap hero">
+      <div class="panel hero-main">
+        <span class="eyebrow">Hướng dẫn backend</span>
+        <h1>Hiểu dự án trong vài phút.</h1>
+        <p class="lead">Tài liệu trực quan cho backend Spring Boot: mỗi vai trò làm gì, request đi qua những lớp nào, database liên kết ra sao và từng phân hệ sử dụng những API nào.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="http://localhost:8080/swagger-ui/index.html">Mở Swagger</a>
+          <a class="btn ghost" href="./HUONGDAN.md">Xem bản Markdown</a>
+        </div>
+      </div>
+
+      <aside class="panel quick" aria-label="Thông tin nhanh">
+        <div class="quick-item"><span>Lệnh chạy</span><strong><code>./mvnw.cmd spring-boot:run</code></strong></div>
+        <div class="quick-item"><span>Base URL</span><strong>http://localhost:8080</strong></div>
+        <div class="quick-item"><span>Mật khẩu seed</span><strong><code>password</code></strong></div>
+        <div class="quick-item"><span>Chế độ database</span><strong>Oracle, chỉ validate schema</strong></div>
+      </aside>
+    </section>
+
+    <section id="flow" class="wrap">
+      <div class="section-title">
+        <h2>Backend Hoạt Động Như Thế Nào</h2>
+        <p>Mỗi request cần đăng nhập đi qua các lớp dưới đây. Khi lỗi, hãy kiểm tra theo thứ tự từ trái sang phải.</p>
+      </div>
+      <div class="layer-map">
+        <div class="layer"><span class="tag green">1</span><b>Máy khách</b><p>Frontend, Postman hoặc Swagger gửi request HTTP đến các đường dẫn <code>/api/**</code>.</p></div>
+        <div class="layer"><span class="tag blue">2</span><b>Bảo mật JWT</b><p><code>JwtAuthFilter</code> đọc bearer token, Spring Security kiểm tra quyền theo prefix API.</p></div>
+        <div class="layer"><span class="tag gold">3</span><b>Controller</b><p>Controller gom endpoint theo nghiệp vụ: khách hàng, kinh doanh, sản phẩm, kế toán.</p></div>
+        <div class="layer"><span class="tag green">4</span><b>Service</b><p>Service xử lý rule nghiệp vụ: đặt tour, thanh toán, voucher, phân công, quyết toán.</p></div>
+        <div class="layer"><span class="tag blue">5</span><b>Oracle DB</b><p>Repository lưu JPA entity được map rõ ràng tới table và column trong Oracle.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-title">
+        <h2>Luồng Nghiệp Vụ Chính</h2>
+        <p>Đây là luồng dễ hiểu nhất để nắm cách hệ thống ERP du lịch vận hành từ đầu đến cuối.</p>
+      </div>
+      <div class="flowline">
+        <div class="flow-step"><span class="num">1</span><strong>Xem tour</strong><small>Khách xem tour công khai tại <code>/api/public/tour</code>.</small></div>
+        <div class="flow-step"><span class="num">2</span><strong>Đặt tour</strong><small>Khách tạo đơn trong bảng <code>DONDATTOUR</code>.</small></div>
+        <div class="flow-step"><span class="num">3</span><strong>Thanh toán</strong><small>Khách thanh toán qua nhóm <code>/api/thanh-toan</code>.</small></div>
+        <div class="flow-step"><span class="num">4</span><strong>Kinh doanh</strong><small>Nhân viên kinh doanh xác nhận đơn và xử lý yêu cầu hỗ trợ.</small></div>
+        <div class="flow-step"><span class="num">5</span><strong>Điều hành</strong><small>Điều hành phân công HDV, HDV vận hành tour.</small></div>
+        <div class="flow-step"><span class="num">6</span><strong>Kế toán</strong><small>Kế toán duyệt chi phí, hoàn tiền và quyết toán.</small></div>
+      </div>
+    </section>
+
+    <section id="modules" class="wrap">
+      <div class="section-title">
+        <h2>Các Phân Hệ Chính</h2>
+        <p>Mỗi phân hệ có vai trò chính, prefix API riêng và nhóm bảng database liên quan.</p>
+      </div>
+      <div class="module-grid">
+        <article class="module"><span class="role">ADMIN</span><h3>Quản trị</h3><ul><li><code>/api/quan-tri</code></li><li>TAIKHOAN, VAITRO</li><li>Nhân viên, vai trò, nhật ký bảo mật</li></ul></article>
+        <article class="module"><span class="role">SANPHAM</span><h3>Sản phẩm</h3><ul><li><code>/api/san-pham</code></li><li>TOURMAU, LICHTRINHTOUR</li><li>Tour mẫu, phòng, dịch vụ</li></ul></article>
+        <article class="module"><span class="role">DIEUHANH</span><h3>Điều hành</h3><ul><li><code>/api/dieu-hanh</code></li><li>TOURTHUCTE, PHANCONGTOUR</li><li>Đợt khởi hành, phân công HDV</li></ul></article>
+        <article class="module"><span class="role">KINHDOANH</span><h3>Kinh doanh</h3><ul><li><code>/api/kinh-doanh</code></li><li>DONDATTOUR, YEUCAUHOTRO</li><li>Đơn đặt tour, khách hàng, voucher</li></ul></article>
+        <article class="module"><span class="role">KHACHHANG</span><h3>Khách hàng</h3><ul><li><code>/api/khach-hang</code></li><li>HOCHIEUSO, LICHSUTOUR</li><li>Đặt tour, voucher, đánh giá</li></ul></article>
+        <article class="module"><span class="role">HDV</span><h3>Hướng dẫn viên</h3><ul><li><code>/api/huong-dan-vien</code></li><li>DIEMDANH, HANHDONG</li><li>Điểm danh, sự cố, chi phí</li></ul></article>
+        <article class="module"><span class="role">KETOAN</span><h3>Kế toán</h3><ul><li><code>/api/ke-toan</code></li><li>GIAODICH, QUYETTOAN</li><li>Hoàn tiền, doanh thu, quyết toán</li></ul></article>
+        <article class="module"><span class="role">CÔNG KHAI</span><h3>Công khai</h3><ul><li><code>/api/public</code></li><li>TOURTHUCTE, DANHGIAKH</li><li>Xem tour và đánh giá</li></ul></article>
+      </div>
+    </section>
+
+    <section id="security" class="wrap">
+      <div class="section-title">
+        <h2>Quy Tắc Phân Quyền</h2>
+        <p>Dùng đúng tài khoản cho đúng prefix. Token hợp lệ vẫn có thể bị <code>403 Forbidden</code> nếu sai vai trò.</p>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Khu vực</th><th>Prefix</th><th>Vai trò được phép</th><th>Tài khoản test</th></tr></thead>
+          <tbody>
+            <tr><td>Xác thực</td><td><span class="endpoint">/api/auth/**</span></td><td>Công khai</td><td>Không cần</td></tr>
+            <tr><td>Tour công khai</td><td><span class="endpoint">/api/public/**</span></td><td>Công khai</td><td>Không cần</td></tr>
+            <tr><td>Quản trị</td><td><span class="endpoint">/api/quan-tri/**</span></td><td><code>ADMIN</code></td><td><code>admin</code></td></tr>
+            <tr><td>Sản phẩm</td><td><span class="endpoint">/api/san-pham/**</span></td><td><code>SANPHAM</code></td><td><code>sanpham01</code></td></tr>
+            <tr><td>Kinh doanh</td><td><span class="endpoint">/api/kinh-doanh/**</span></td><td><code>KINHDOANH</code></td><td><code>sales01</code></td></tr>
+            <tr><td>Điều hành</td><td><span class="endpoint">/api/dieu-hanh/**</span></td><td><code>DIEUHANH</code></td><td><code>manager01</code></td></tr>
+            <tr><td>Hướng dẫn viên</td><td><span class="endpoint">/api/huong-dan-vien/**</span></td><td><code>HDV</code> hoặc <code>DIEUHANH</code></td><td><code>hdv01</code></td></tr>
+            <tr><td>Kế toán</td><td><span class="endpoint">/api/ke-toan/**</span></td><td><code>KETOAN</code></td><td><code>ketoan01</code></td></tr>
+            <tr><td>Khách hàng</td><td><span class="endpoint">/api/khach-hang/**</span></td><td><code>KHACHHANG</code></td><td><code>khachhang01</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="api" class="wrap">
+      <div class="section-title">
+        <h2>API Chi Tiết Theo Phân Hệ</h2>
+        <p>Phần này trả lời trực tiếp câu hỏi: từng vai trò/phân hệ cần dùng những API nào.</p>
+      </div>
+      <div class="api-list">
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Công khai và xác thực</h3><p>Không cần token, dùng để xem tour và lấy JWT.</p></div><span class="tag green">CÔNG KHAI</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/auth/dang-ky</span></td><td>Đăng ký tài khoản khách hàng mới</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/auth/dang-nhap</span></td><td>Đăng nhập và lấy JWT access token</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/auth/quen-mat-khau</span></td><td>Tạo reset token trong môi trường phát triển/kiểm thử</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/auth/dat-lai-mat-khau</span></td><td>Đặt lại mật khẩu bằng reset token</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/public/tour</span></td><td>Xem danh sách tour đang mở bán</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/public/tour/{maTourThucTe}</span></td><td>Xem chi tiết tour, lịch trình, giá, số chỗ</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/public/tour/{maTourThucTe}/danh-gia</span></td><td>Xem đánh giá của tour</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Khách hàng</h3><p>Dùng tài khoản <code>khachhang01..06</code>, vai trò <code>KHACHHANG</code>.</p></div><span class="tag green">/api/khach-hang</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/khach-hang/ho-so</span></td><td>Xem hồ sơ, hạng thành viên, điểm xanh</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/khach-hang/ho-so</span></td><td>Cập nhật dị ứng và ghi chú y tế</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/khach-hang/dat-tour</span></td><td>Tạo đơn đặt tour</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/khach-hang/dat-tour</span></td><td>Xem danh sách đơn đặt tour của tôi</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/khach-hang/dat-tour/{maDatTour}</span></td><td>Xem chi tiết một đơn đặt tour</td></tr>
+            <tr><td><span class="method del">DELETE</span></td><td><span class="endpoint">/api/khach-hang/dat-tour/{maDatTour}</span></td><td>Hủy đơn còn ở trạng thái chờ xác nhận</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/khach-hang/dat-tour/{maDatTour}/huy</span></td><td>Gửi yêu cầu hủy tour đã xác nhận</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/khach-hang/lich-su-tour</span></td><td>Xem lịch sử tour đã tham gia</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/khach-hang/yeu-cau-ho-tro</span></td><td>Tạo ticket hỗ trợ/khiếu nại</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/khach-hang/yeu-cau-ho-tro</span></td><td>Xem ticket của tôi</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/khach-hang/vi-voucher</span></td><td>Xem ví voucher</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/khach-hang/ap-voucher</span></td><td>Áp voucher vào đơn đặt tour</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/khach-hang/doi-diem</span></td><td>Đổi điểm xanh lấy voucher</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/khach-hang/danh-gia</span></td><td>Đánh giá tour đã hoàn thành</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/thanh-toan/khoi-tao</span></td><td>Khởi tạo thanh toán, có thể dùng <code>mock=true</code></td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/thanh-toan/{maDatTour}/ket-qua</span></td><td>Kiểm tra trạng thái thanh toán</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Quản trị</h3><p>Dùng tài khoản <code>admin</code>, vai trò <code>ADMIN</code>.</p></div><span class="tag red">/api/quan-tri</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/quan-tri/dang-ky-nhan-vien</span></td><td>Tạo tài khoản nhân viên nội bộ</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/quan-tri/nhan-vien</span></td><td>Danh sách nhân viên, có filter theo họ tên, vai trò, trạng thái</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/quan-tri/nhan-vien/{maNhanVien}</span></td><td>Xem chi tiết nhân viên</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/quan-tri/nhan-vien/{maNhanVien}/khoa</span></td><td>Khóa tài khoản nhân viên</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/quan-tri/nhan-vien/{maNhanVien}/mo-khoa</span></td><td>Mở khóa tài khoản nhân viên</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/quan-tri/nhan-vien/{maNhanVien}/vai-tro</span></td><td>Gán vai trò nhân viên: <code>SANPHAM</code>, <code>KINHDOANH</code>, <code>DIEUHANH</code>, <code>KETOAN</code>, <code>HDV</code></td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/quan-tri/nhat-ky-he-thong</span></td><td>Tra cứu nhật ký thêm/sửa/xóa hệ thống</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Sản phẩm</h3><p>Dùng tài khoản <code>sanpham01</code>, vai trò <code>SANPHAM</code>.</p></div><span class="tag blue">/api/san-pham</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/san-pham/tour-mau</span></td><td>Danh sách tour mẫu, filter theo tiêu đề, trạng thái, thời lượng</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}</span></td><td>Chi tiết tour mẫu và lịch trình</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/san-pham/tour-mau</span></td><td>Tạo tour mẫu mới</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}</span></td><td>Cập nhật tour mẫu</td></tr>
+            <tr><td><span class="method del">DELETE</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}</span></td><td>Xóa mềm/khóa tour mẫu</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}/sao-chep</span></td><td>Sao chép tour mẫu</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}/lich-trinh</span></td><td>Thêm ngày lịch trình</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}/lich-trinh/{maLichTrinh}</span></td><td>Sửa ngày lịch trình</td></tr>
+            <tr><td><span class="method del">DELETE</span></td><td><span class="endpoint">/api/san-pham/tour-mau/{id}/lich-trinh/{maLichTrinh}</span></td><td>Xóa ngày lịch trình</td></tr>
+            <tr><td><span class="method">GET</span> <span class="method post">POST</span> <span class="method put">PUT</span> <span class="method del">DELETE</span></td><td><span class="endpoint">/api/san-pham/loai-phong</span></td><td>Quản lý loại phòng và phụ thu</td></tr>
+            <tr><td><span class="method">GET</span> <span class="method post">POST</span> <span class="method put">PUT</span> <span class="method del">DELETE</span></td><td><span class="endpoint">/api/san-pham/dich-vu-them</span></td><td>Quản lý dịch vụ bổ sung</td></tr>
+            <tr><td><span class="method">GET</span> <span class="method post">POST</span> <span class="method put">PUT</span> <span class="method del">DELETE</span></td><td><span class="endpoint">/api/san-pham/hanh-dong-xanh</span></td><td>Quản lý hành động xanh cộng điểm</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Điều hành</h3><p>Dùng tài khoản <code>manager01</code>, vai trò <code>DIEUHANH</code>.</p></div><span class="tag gold">/api/dieu-hanh</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/tour-thuc-te</span></td><td>Danh sách đợt khởi hành thực tế</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/tour-thuc-te/{id}</span></td><td>Chi tiết tour thực tế</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/dieu-hanh/tour-thuc-te</span></td><td>Tạo đợt khởi hành từ tour mẫu</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/dieu-hanh/tour-thuc-te/{id}</span></td><td>Cập nhật giá, số khách, trạng thái</td></tr>
+            <tr><td><span class="method del">DELETE</span></td><td><span class="endpoint">/api/dieu-hanh/tour-thuc-te/{id}</span></td><td>Hủy tour thực tế</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/hdv-kha-dung?maTourThucTe=TTT001</span></td><td>Tìm HDV không trùng lịch</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/dieu-hanh/phan-cong</span></td><td>Phân công HDV vào tour</td></tr>
+            <tr><td><span class="method del">DELETE</span></td><td><span class="endpoint">/api/dieu-hanh/phan-cong/{maPhanCong}</span></td><td>Hủy phân công</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/nhan-vien/{maNhanVien}/nang-luc</span></td><td>Xem năng lực HDV</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/dieu-hanh/nhan-vien/{maNhanVien}/nang-luc</span></td><td>Cập nhật năng lực/chứng chỉ HDV</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/tour/{maTour}/doan</span></td><td>Xem danh sách đoàn của tour</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/tour/{maTour}/su-co</span></td><td>Xem sự cố trong tour</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/dieu-hanh/tour/{maTour}/chi-phi</span></td><td>Xem chi phí phát sinh của tour</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Kinh doanh</h3><p>Dùng tài khoản <code>sales01</code> hoặc <code>sales02</code>, vai trò <code>KINHDOANH</code>.</p></div><span class="tag green">/api/kinh-doanh</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/dat-tour</span></td><td>Xem danh sách đơn đặt tour</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/kinh-doanh/dat-tour/{maDatTour}/xac-nhan</span></td><td>Xác nhận đơn đặt tour</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/don-dat-tour</span></td><td>Danh sách booking có filter trạng thái/tour</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/khach-hang</span></td><td>Tìm kiếm khách hàng</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/khach-hang/{maKhachHang}</span></td><td>Xem chi tiết hồ sơ khách hàng</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/yeu-cau-ho-tro</span></td><td>Danh sách yêu cầu hỗ trợ/khiếu nại</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/kinh-doanh/yeu-cau-ho-tro/{maYeuCau}</span></td><td>Cập nhật trạng thái xử lý ticket</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/yeu-cau-huy</span></td><td>Danh sách yêu cầu hủy tour/hoàn tiền</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/kinh-doanh/yeu-cau-huy/{maYeuCau}/duyet</span></td><td>Duyệt yêu cầu hủy tour</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/kinh-doanh/yeu-cau-huy/{maYeuCau}/tu-choi</span></td><td>Từ chối yêu cầu hủy tour</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/voucher</span></td><td>Danh sách voucher</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/kinh-doanh/voucher</span></td><td>Tạo voucher</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/kinh-doanh/voucher/{maVoucher}</span></td><td>Cập nhật voucher</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/kinh-doanh/voucher/{maVoucher}/vo-hieu</span></td><td>Vô hiệu voucher</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/kinh-doanh/voucher/{maVoucher}/phat-hanh</span></td><td>Phát hành voucher cho khách hàng</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/kinh-doanh/danh-gia</span></td><td>Xem đánh giá để kiểm duyệt/theo dõi</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Hướng dẫn viên</h3><p>Dùng tài khoản <code>hdv01..hdv04</code>, vai trò <code>HDV</code>.</p></div><span class="tag blue">/api/huong-dan-vien</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/huong-dan-vien/tour-cua-toi</span></td><td>Xem các tour được phân công</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/huong-dan-vien/lich-cong-tac</span></td><td>Xem lịch công tác</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/huong-dan-vien/nang-luc</span></td><td>Xem năng lực/chứng chỉ của bản thân</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/doan</span></td><td>Xem danh sách đoàn</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/diem-danh</span></td><td>Điểm danh khách hàng</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/hanh-dong-xanh</span></td><td>Ghi nhận hành động xanh cho khách</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/su-co</span></td><td>Xem nhật ký sự cố</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/su-co</span></td><td>Báo cáo sự cố</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/huong-dan-vien/su-co/{maSuCo}</span></td><td>Cập nhật sự cố</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/chi-phi</span></td><td>Khai báo chi phí phát sinh</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/huong-dan-vien/tour/{maTour}/chi-phi</span></td><td>Xem chi phí của tour</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="api-block">
+          <div class="api-block-head"><div><h3>Kế toán</h3><p>Dùng tài khoản <code>ketoan01</code>, vai trò <code>KETOAN</code>.</p></div><span class="tag gold">/api/ke-toan</span></div>
+          <table><thead><tr><th>Phương thức</th><th>Endpoint</th><th>Chức năng</th></tr></thead><tbody>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/chi-phi</span></td><td>Danh sách chi phí chờ duyệt/đã xử lý</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/ke-toan/chi-phi/{maChiPhi}/duyet</span></td><td>Duyệt chi phí phát sinh</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/ke-toan/chi-phi/{maChiPhi}/tu-choi</span></td><td>Từ chối chi phí phát sinh</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/tour-can-quyet-toan</span></td><td>Tour đã kết thúc và cần quyết toán</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/tinh-toan/{maTour}</span></td><td>Tính thử doanh thu, chi phí, lợi nhuận</td></tr>
+            <tr><td><span class="method post">POST</span></td><td><span class="endpoint">/api/ke-toan/quyet-toan/{maTour}</span></td><td>Tạo/cập nhật bản nháp quyết toán</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/ke-toan/quyet-toan/{maQuyetToan}/chot</span></td><td>Chốt quyết toán</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/quyet-toan</span></td><td>Danh sách quyết toán</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/quyet-toan/{maQuyetToan}</span></td><td>Chi tiết quyết toán</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/giao-dich-hoan</span></td><td>Giao dịch hoàn tiền chờ xử lý</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td><span class="endpoint">/api/ke-toan/giao-dich-hoan/{maGiaoDich}/xac-nhan</span></td><td>Xác nhận đã hoàn tiền</td></tr>
+            <tr><td><span class="method">GET</span></td><td><span class="endpoint">/api/ke-toan/bao-cao/doanh-thu</span></td><td>Báo cáo doanh thu theo kỳ</td></tr>
+          </tbody></table>
+        </article>
+      </div>
+    </section>
+
+    <section id="database" class="wrap">
+      <div class="section-title">
+        <h2>Thiết Lập Database</h2>
+        <p>Ứng dụng dùng Oracle và chỉ validate schema khi khởi động. App không tự tạo bảng và không tự seed dữ liệu.</p>
+      </div>
+      <div class="grid three">
+        <div class="card"><span class="tag green">Bước 1</span><h3>Tạo schema</h3><p>Chuẩn bị user/schema Oracle và khai báo thông tin kết nối trong file <code>.env</code>.</p></div>
+        <div class="card"><span class="tag blue">Bước 2</span><h3>Chạy DDL</h3><p>Chạy <code>src/main/resources/db/KhoiTaoBang.sql</code> để tạo lại bảng, constraint và index.</p></div>
+        <div class="card"><span class="tag gold">Bước 3</span><h3>Seed dữ liệu</h3><p>Chạy <code>data_v1.sql</code> để tạo tài khoản nhân viên. Mật khẩu đăng nhập seed là <code>password</code>.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-title">
+        <h2>Tài Khoản Seed</h2>
+        <p>Dùng các tài khoản này để test nhanh từng phân hệ.</p>
+      </div>
+      <div class="account-grid">
+        <div class="account"><strong>admin</strong><span>ADMIN</span></div>
+        <div class="account"><strong>sanpham01</strong><span>SANPHAM</span></div>
+        <div class="account"><strong>manager01</strong><span>DIEUHANH</span></div>
+        <div class="account"><strong>sales01</strong><span>KINHDOANH</span></div>
+        <div class="account"><strong>ketoan01</strong><span>KETOAN</span></div>
+        <div class="account"><strong>hdv01..hdv02</strong><span>HDV</span></div>
+        <div class="account"><strong>password</strong><span>Mật khẩu mặc định</span></div>
+      </div>
+    </section>
+
+    <section id="run" class="wrap">
+      <div class="section-title">
+        <h2>Chạy Và Kiểm Tra</h2>
+        <p>Các lệnh thường dùng khi phát triển và kiểm tra backend.</p>
+      </div>
+      <div class="grid two">
+        <div class="card"><span class="tag green">Chạy</span><h3>Chạy backend</h3><p><code>./mvnw.cmd spring-boot:run</code></p></div>
+        <div class="card"><span class="tag blue">Kiểm thử</span><h3>Chạy test</h3><p><code>./mvnw.cmd test</code>. Kiểm thử nạp Spring context cần Oracle schema truy cập được.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="callout">
+        <div class="logo">!</div>
+        <div>
+          <strong>Lỗi hay gặp nhất</strong>
+          <p>Không dùng các prefix cũ như <code>/api/admin</code>, <code>/api/sales</code> hoặc <code>/api/hdv</code>. Backend hiện tại dùng prefix có dấu gạch nối như <code>/api/quan-tri</code>, <code>/api/kinh-doanh</code> và <code>/api/huong-dan-vien</code>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    Hướng dẫn Digital Travel ERP. Nguồn chi tiết: <code>HUONGDAN.md</code> và Swagger khi backend đang chạy.
+  </footer>
+</body>
+</html>

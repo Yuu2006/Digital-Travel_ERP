@@ -15,6 +15,7 @@ import com.digitaltravel.erp.entity.ChiPhiThucTe;
 public interface ChiPhiThucTeRepository extends JpaRepository<ChiPhiThucTe, String> {
 
     @Query("SELECT c FROM ChiPhiThucTe c JOIN FETCH c.nhanVien nv JOIN FETCH nv.taiKhoan WHERE c.tourThucTe.MaTourThucTe = :maTour ORDER BY c.NgayKhai DESC")
+    // UC44 - Cập nhật chi phí thực tế: Lấy chi phí theo tour
     List<ChiPhiThucTe> findByMaTour(@Param("maTour") String maTour);
 
     @Query("""
@@ -25,6 +26,7 @@ public interface ChiPhiThucTeRepository extends JpaRepository<ChiPhiThucTe, Stri
             WHERE tk.MaTaiKhoan = :maTaiKhoan
             ORDER BY c.NgayKhai DESC
             """)
+    // UC44 - Cập nhật chi phí thực tế: Lấy chi phí theo HDV
     List<ChiPhiThucTe> findByHdvTaiKhoan(@Param("maTaiKhoan") String maTaiKhoan);
 
     // Kế toán: DS chi phí chờ duyệt
@@ -34,10 +36,12 @@ public interface ChiPhiThucTeRepository extends JpaRepository<ChiPhiThucTe, Stri
             AND (:maTour IS NULL OR c.tourThucTe.MaTourThucTe = :maTour)
             ORDER BY c.NgayKhai DESC
             """)
+    // UC47 - Phê duyệt chi phí thực tế: Lọc chi phí chờ xử lý
     Page<ChiPhiThucTe> findByTrangThai(@Param("trangThai") String trangThai, @Param("maTour") String maTour, Pageable pageable);
 
     // Tổng chi phí đã duyệt của 1 tour (dùng cho quyết toán)
     @Query("SELECT c FROM ChiPhiThucTe c WHERE c.tourThucTe.MaTourThucTe = :maTour AND c.TrangThaiDuyet = 'DA_DUYET'")
+    // UC48 - Quyết toán tour: Lấy chi phí đã duyệt
     List<ChiPhiThucTe> findDaDuyetByMaTour(@Param("maTour") String maTour);
 
     @Query("""
@@ -49,7 +53,6 @@ public interface ChiPhiThucTeRepository extends JpaRepository<ChiPhiThucTe, Stri
             """)
     List<ChiPhiThucTe> findAllWithRelations();
 
-    // UC51: Xuất dữ liệu chi phí cho Power BI
     @Query("""
             SELECT c FROM ChiPhiThucTe c
             JOIN FETCH c.tourThucTe
@@ -57,6 +60,7 @@ public interface ChiPhiThucTeRepository extends JpaRepository<ChiPhiThucTe, Stri
               AND (:denNgay IS NULL OR c.NgayKhai < :denNgay)
             ORDER BY c.NgayKhai DESC
             """)
+    // UC51 - Trích xuất dữ liệu phân tích: Xuất dữ liệu chi phí
     List<ChiPhiThucTe> xuatDuLieu(
             @Param("tuNgay") java.time.LocalDateTime tuNgay,
             @Param("denNgay") java.time.LocalDateTime denNgay

@@ -29,6 +29,7 @@ public class QuanTriController {
 
     @GetMapping("/nhat-ky-he-thong")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    // UC68 - Xem nhật ký hệ thống: Tra cứu lịch sử hoạt động
     public ResponseEntity<ApiResponse<Page<NhatKyHeThongResponse>>> nhatKyHeThong(
             @RequestParam(required = false) String maTaiKhoan,
             @RequestParam(required = false) String hanhDong,

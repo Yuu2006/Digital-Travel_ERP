@@ -27,6 +27,7 @@ public class HanhDongXanhService {
     private final TourThucTeRepository tourThucTeRepository;
     private final HdxTourThucTeRepository hdxTourThucTeRepository;
 
+    // UC20 - Cấu hình hành động xanh: Lấy hành động theo tour
     public List<HanhDongXanhResponse> danhSach(String maTourThucTe) {
         List<HanhDongXanh> dsHanhDong = maTourThucTe == null || maTourThucTe.isBlank()
                 ? hanhDongXanhRepository.findAll()
@@ -36,6 +37,14 @@ public class HanhDongXanhService {
                 .toList();
     }
 
+    // UC20 - Cấu hình hành động xanh: Lấy danh mục hành động chung
+    public List<HanhDongXanhResponse> danhSachChung() {
+        return hanhDongXanhRepository.findCommonActions().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    // UC20 - Cấu hình hành động xanh: Xem chi tiết hành động
     public HanhDongXanhResponse chiTiet(String id) {
         HanhDongXanh hdx = hanhDongXanhRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay hanh dong xanh: " + id));
@@ -43,6 +52,7 @@ public class HanhDongXanhService {
     }
 
     @Transactional
+    // UC20 - Cấu hình hành động xanh: Tạo hành động xanh
     public HanhDongXanhResponse taoMoi(HanhDongXanhRequest request) {
         HanhDongXanh hdx = new HanhDongXanh();
         hdx.setMaHanhDongXanh("HDX_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
@@ -54,6 +64,7 @@ public class HanhDongXanhService {
     }
 
     @Transactional
+    // UC20 - Cấu hình hành động xanh: Cập nhật hành động xanh
     public HanhDongXanhResponse capNhat(String id, HanhDongXanhRequest request) {
         HanhDongXanh hdx = hanhDongXanhRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay hanh dong xanh: " + id));
@@ -66,6 +77,7 @@ public class HanhDongXanhService {
     }
 
     @Transactional
+    // UC20 - Cấu hình hành động xanh: Xóa hành động xanh
     public void xoa(String id) {
         HanhDongXanh hdx = hanhDongXanhRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay hanh dong xanh: " + id));

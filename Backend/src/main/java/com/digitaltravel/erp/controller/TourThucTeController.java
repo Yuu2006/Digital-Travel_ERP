@@ -36,9 +36,9 @@ public class TourThucTeController {
 
     private final TourThucTeService tourThucTeService;
 
-    // UC14: Danh sach tour thuc te cho dieu hanh
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC14 - Tra cứu tour thực tế: Lọc danh sách tour thực tế
     public ResponseEntity<ApiResponse<Page<TourThucTeResponse>>> danhSach(
             @RequestParam(required = false) String trangThai,
             @RequestParam(required = false) String maTourMau,
@@ -58,16 +58,16 @@ public class TourThucTeController {
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
-    // UC14: Chi tiết tour thực tế
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC14 - Tra cứu tour thực tế: Xem chi tiết tour thực tế
     public ResponseEntity<ApiResponse<TourThucTeResponse>> chiTiet(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(tourThucTeService.chiTiet(id)));
     }
 
-    // UC11: Khởi tạo tour thực tế từ tour mẫu
     @PostMapping
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC11 - Khởi tạo tour thực tế từ tour mẫu: Tạo chuyến tour
     public ResponseEntity<ApiResponse<TourThucTeResponse>> taoMoi(
             @Valid @RequestBody TaoTourThucTeRequest request,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -75,9 +75,9 @@ public class TourThucTeController {
         return ResponseEntity.status(201).body(ApiResponse.created(result));
     }
 
-    // UC13: Sửa tour thực tế
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC13 - Sửa tour thực tế: Cập nhật thông tin vận hành
     public ResponseEntity<ApiResponse<TourThucTeResponse>> capNhat(
             @PathVariable String id,
             @Valid @RequestBody CapNhatTourThucTeRequest request,
@@ -86,9 +86,9 @@ public class TourThucTeController {
                 .ok(ApiResponse.ok("Cap nhat thanh cong", tourThucTeService.capNhat(id, request, user.getUsername())));
     }
 
-    // UC12: Xóa tour thực tế (soft delete → HUY)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC12 - Xóa tour thực tế: Hủy chuyến tour
     public ResponseEntity<ApiResponse<Void>> xoa(@PathVariable String id) {
         tourThucTeService.xoa(id);
         return ResponseEntity.ok(ApiResponse.noContent("Huy tour thuc te thanh cong"));

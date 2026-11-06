@@ -46,9 +46,11 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
+    // UC67 - Phân quyền truy cập: Cấu hình bảo vệ API theo vai trò
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                // UC55 - Quản lý truy cập tài khoản: Cấu hình CORS đăng nhập
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
@@ -87,6 +89,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/khach-hang/**").hasAnyRole(ADMIN, KHACHHANG)
                         .requestMatchers("/api/thanh-toan/**").hasAnyRole(ADMIN, KHACHHANG)
                         .anyRequest().authenticated())
+                // UC57 - Đăng nhập: Cấu hình nhà cung cấp xác thực
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthEntryPoint)
@@ -117,11 +120,13 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(taiKhoanDetailsService);
+        // UC56 - Đăng ký: Mã hóa mật khẩu tài khoản
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
     @Bean
+    // UC57 - Đăng nhập: Cung cấp bộ quản lý xác thực
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }

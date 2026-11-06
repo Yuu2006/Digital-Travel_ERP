@@ -20,18 +20,15 @@ import com.digitaltravel.erp.service.DanhGiaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-/**
- * UC35 — Khách hàng gửi đánh giá tour sau khi kết thúc
- */
 @RestController
 @RequiredArgsConstructor
 public class DanhGiaController {
 
     private final DanhGiaService danhGiaService;
 
-    // ── UC35: KH gửi đánh giá ────────────────────────────────────────────────
     @PostMapping("/api/khach-hang/danh-gia")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC35 - Đánh giá: Ghi nhận phản hồi sau tour
     public ResponseEntity<ApiResponse<DanhGiaKhResponse>> guiDanhGia(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody DanhGiaRequest request) {
@@ -39,12 +36,11 @@ public class DanhGiaController {
                 danhGiaService.guiDanhGia(user.getTaiKhoan().getMaTaiKhoan(), request)));
     }
 
-    // ── Admin: Xem tất cả đánh giá (moderation) ───────────────────────────────
     @GetMapping("/api/kinh-doanh/danh-gia")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC35 - Đánh giá: Tra cứu phản hồi khách hàng
     public ResponseEntity<ApiResponse<Page<DanhGiaKhResponse>>> tatCaDanhGia(
             @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(danhGiaService.tatCaDanhGia(pageable)));
     }
 }
-

@@ -16,6 +16,7 @@ public interface GiaoDichRepository extends JpaRepository<GiaoDich, String> {
 
     // Tìm giao dịch thanh toán đang chờ/đã hoàn thành của 1 đơn
     @Query("SELECT g FROM GiaoDich g WHERE g.donDatTour.maDatTour = :maDatTour AND g.loaiGiaoDich = 'THANH_TOAN' ORDER BY g.ngayThanhToan DESC")
+    // UC29 - Thanh toán đơn hàng: Lấy giao dịch theo đơn
     List<GiaoDich> findByMaDatTour(@Param("maDatTour") String maDatTour);
 
     @Query("""
@@ -27,6 +28,7 @@ public interface GiaoDichRepository extends JpaRepository<GiaoDich, String> {
               AND d.trangThai = 'CHO_XAC_NHAN'
               AND g.ngayThanhToan < :thoiDiemHetHan
             """)
+    // UC29 - Thanh toán đơn hàng: Tìm QR chờ thanh toán quá hạn
     List<GiaoDich> findQrChoThanhToanQuaHan(@Param("thoiDiemHetHan") LocalDateTime thoiDiemHetHan);
 
     // Kiểm tra idempotency: transId đã xử lý chưa
@@ -34,6 +36,7 @@ public interface GiaoDichRepository extends JpaRepository<GiaoDich, String> {
 
     // Lấy giao dịch thanh toán thành công của 1 đơn
     @Query("SELECT g FROM GiaoDich g WHERE g.donDatTour.maDatTour = :maDatTour AND g.trangThai = 'THANH_CONG'")
+    // UC29 - Thanh toán đơn hàng: Kiểm tra giao dịch thành công
     Optional<GiaoDich> findThanhCongByMaDatTour(@Param("maDatTour") String maDatTour);
 
     @Query("""
@@ -42,20 +45,20 @@ public interface GiaoDichRepository extends JpaRepository<GiaoDich, String> {
               AND g.loaiGiaoDich = 'HOAN_TIEN'
               AND g.trangThai = 'CHO_THANH_TOAN'
             """)
+    // UC50 - Xử lý hoàn tiền: Tìm giao dịch hoàn tiền chờ xử lý
     Optional<GiaoDich> findPendingRefundByMaDatTour(@Param("maDatTour") String maDatTour);
 
-    // UC50: Lấy giao dịch chờ hoàn tiền
     @Query("""
             SELECT g FROM GiaoDich g
             JOIN FETCH g.donDatTour d
             WHERE g.loaiGiaoDich = 'HOAN_TIEN'
             ORDER BY g.ngayThanhToan DESC
             """)
+    // UC50 - Xử lý hoàn tiền: Lấy danh sách chờ hoàn tiền
     org.springframework.data.domain.Page<GiaoDich> findChoHoanTien(
             org.springframework.data.domain.Pageable pageable
     );
 
-    // UC51: Xuất dữ liệu giao dịch cho Power BI
     @Query("""
             SELECT g FROM GiaoDich g
             JOIN FETCH g.donDatTour
@@ -63,6 +66,7 @@ public interface GiaoDichRepository extends JpaRepository<GiaoDich, String> {
               AND (:denNgay IS NULL OR g.ngayThanhToan < :denNgay)
             ORDER BY g.ngayThanhToan DESC
             """)
+    // UC51 - Trích xuất dữ liệu phân tích: Xuất dữ liệu giao dịch
     java.util.List<GiaoDich> xuatDuLieu(
             @Param("tuNgay") java.time.LocalDateTime tuNgay,
             @Param("denNgay") java.time.LocalDateTime denNgay

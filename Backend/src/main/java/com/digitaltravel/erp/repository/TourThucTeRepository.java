@@ -20,6 +20,7 @@ public interface TourThucTeRepository extends JpaRepository<TourThucTe, String> 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ttt FROM TourThucTe ttt WHERE ttt.MaTourThucTe = :maTourThucTe")
+    // UC27 - Đặt tour: Khóa tour khi cập nhật quỹ chỗ
     Optional<TourThucTe> findByIdForUpdate(@Param("maTourThucTe") String maTourThucTe);
 
     @Query("""
@@ -49,6 +50,7 @@ public interface TourThucTeRepository extends JpaRepository<TourThucTe, String> 
               AND (:giaTu IS NULL OR ttt.GiaHienHanh >= :giaTu)
               AND (:giaDen IS NULL OR ttt.GiaHienHanh <= :giaDen)
             """)
+    // UC14 - Tra cứu tour thực tế: Lọc tour nội bộ
     Page<TourThucTe> timKiem(
             @Param("trangThai") String trangThai,
             @Param("maTourMau") String maTourMau,
@@ -77,6 +79,7 @@ public interface TourThucTeRepository extends JpaRepository<TourThucTe, String> 
               AND (:thoiLuongMin IS NULL OR tm.ThoiLuong >= :thoiLuongMin)
               AND (:thoiLuongMax IS NULL OR tm.ThoiLuong <= :thoiLuongMax)
             """)
+    // UC25 - Tra cứu tour: Lọc tour công khai còn chỗ
     Page<TourThucTe> timKiemCongKhai(
             @Param("giaTu") java.math.BigDecimal giaTu,
             @Param("giaDen") java.math.BigDecimal giaDen,
@@ -103,6 +106,7 @@ public interface TourThucTeRepository extends JpaRepository<TourThucTe, String> 
                       )
                     """
     )
+    // UC37 - Điều phối HDV: Lấy tour chờ phân công
     Page<TourThucTe> findChoKichHoatChuaPhanCong(Pageable pageable);
 
     // Đếm số tour đã kết thúc trong khoảng thời gian (báo cáo)
@@ -121,6 +125,7 @@ public interface TourThucTeRepository extends JpaRepository<TourThucTe, String> 
             SELECT ttt FROM TourThucTe ttt JOIN FETCH ttt.tourMau
             WHERE ttt.TrangThai = 'MO_BAN'
             """)
+    // UC25 - Tra cứu tour: Lấy tour để tính giá động
     java.util.List<TourThucTe> findForDynamicPricing();
 
     @Query("""
@@ -130,11 +135,11 @@ public interface TourThucTeRepository extends JpaRepository<TourThucTe, String> 
             """)
     List<TourThucTe> findActiveByTourMau(@Param("maTourMau") String maTourMau);
 
-    // UC51: Xuất dữ liệu tour cho Power BI
     @Query("""
             SELECT t FROM TourThucTe t
             JOIN FETCH t.tourMau
             ORDER BY t.NgayKhoiHanh DESC
             """)
+    // UC51 - Trích xuất dữ liệu phân tích: Xuất dữ liệu tour
     List<TourThucTe> xuatDuLieuTour();
 }

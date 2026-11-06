@@ -54,20 +54,19 @@ public class KhachHangController {
     private final DichVuThemService dichVuThemService;
     private final HanhDongXanhService hanhDongXanhService;
 
-    // ──────────────────────── HỒ SƠ KHÁCH HÀNG ───────────────────────────────
 
-    // Xem hồ sơ của bản thân
     @GetMapping("/ho-so")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC21 - Xem thông tin hồ sơ số: Lấy hồ sơ khách hàng
     public ResponseEntity<ApiResponse<HoChieuSoResponse>> layHoSo(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         String maTaiKhoan = user.getTaiKhoan().getMaTaiKhoan();
         return ResponseEntity.ok(ApiResponse.ok(khachHangService.layHoSo(maTaiKhoan)));
     }
 
-    // Cập nhật hồ sơ (chỉ DiUng và GhiChuYTe)
     @PutMapping("/ho-so")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC23 - Cập nhật hồ sơ số: Lưu thông tin khách hàng
     public ResponseEntity<ApiResponse<HoChieuSoResponse>> capNhatHoSo(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody CapNhatHoChieuSoRequest request) {
@@ -76,11 +75,10 @@ public class KhachHangController {
                 khachHangService.capNhatHoSo(maTaiKhoan, request)));
     }
 
-    // ──────────────────────── ĐẶT TOUR ───────────────────────────────────────
 
-    // Tạo đơn đặt tour
     @PostMapping("/dat-tour")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC27 - Đặt tour: Tạo đơn và giữ chỗ tạm thời
     public ResponseEntity<ApiResponse<DonDatTourResponse>> datTour(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody DatTourRequest request) {
@@ -89,9 +87,9 @@ public class KhachHangController {
         return ResponseEntity.status(201).body(ApiResponse.created(result));
     }
 
-    // Danh sách đơn đặt tour của tôi
     @GetMapping("/dat-tour")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC22 - Xem chi tiết lịch sử hành trình: Liệt kê đơn đã đặt
     public ResponseEntity<ApiResponse<Page<DonDatTourResponse>>> danhSachDatTour(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PageableDefault(size = 10, sort = "ngayDat", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -99,9 +97,9 @@ public class KhachHangController {
         return ResponseEntity.ok(ApiResponse.ok(datTourService.danhSachCuaToi(maTaiKhoan, pageable)));
     }
 
-    // Chi tiết đơn đặt tour của tôi
     @GetMapping("/dat-tour/{maDatTour}")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC22 - Xem chi tiết lịch sử hành trình: Xem chi tiết đơn
     public ResponseEntity<ApiResponse<DonDatTourResponse>> chiTietDatTour(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maDatTour) {
@@ -109,9 +107,9 @@ public class KhachHangController {
         return ResponseEntity.ok(ApiResponse.ok(datTourService.chiTietCuaToi(maTaiKhoan, maDatTour)));
     }
 
-    // Hủy đơn đặt tour (chỉ khi ở trạng thái CHO_XAC_NHAN VA DA_XAC_NHAN)
     @DeleteMapping("/dat-tour/{maDatTour}")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC32 - Hủy tour: Hủy đơn đặt tour chờ xác nhận
     public ResponseEntity<ApiResponse<Void>> huyDatTour(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maDatTour) {
@@ -120,9 +118,9 @@ public class KhachHangController {
         return ResponseEntity.ok(ApiResponse.noContent("ủy đơn đặt tour thành công  (chờ nhân viên duyệt)"));
     }
 
-    // UC32 — Yêu cầu hủy tour đã thanh toán (DA_XAC_NHAN) → tạo yêu cầu hoàn tiền
     @PostMapping("/dat-tour/{maDatTour}/huy")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC32 - Hủy tour: Gửi yêu cầu hủy tour
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> yeuCauHuyTour(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maDatTour,
@@ -132,10 +130,9 @@ public class KhachHangController {
         return ResponseEntity.ok(ApiResponse.ok("Gửi yêu cầu hủy tour thành công. Đang chờ nhân viên duyệt.", result));
     }
 
-    // ──────────────────────── NHÂN VIÊN SALES ─────────────────────────────────
-    // Sales: xem tất cả đơn đặt (có filter)
     @GetMapping("/lich-su-tour")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC22 - Xem chi tiết lịch sử hành trình: Tra cứu lịch sử tour
     public ResponseEntity<ApiResponse<Page<LichSuTourResponse>>> lichSuTour(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PageableDefault(size = 10, sort = "NgayThamGia", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -143,10 +140,10 @@ public class KhachHangController {
                 khachHangService.lichSuTour(user.getTaiKhoan().getMaTaiKhoan(), pageable)));
     }
 
-    // ──────────────────────── YÊU CẦU HỖ TRỢ (UC36) ─────────────────────────
 
     @PostMapping("/yeu-cau-ho-tro")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC36 - Khiếu nại: Tạo yêu cầu hỗ trợ
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> taoYeuCau(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody YeuCauHoTroRequest request) {
@@ -156,6 +153,7 @@ public class KhachHangController {
 
     @GetMapping("/yeu-cau-ho-tro")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC36 - Khiếu nại: Tra cứu yêu cầu của khách hàng
     public ResponseEntity<ApiResponse<Page<YeuCauHoTroResponse>>> danhSachYeuCauCuaToi(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @RequestParam(required = false) String loaiYeuCau,
@@ -166,6 +164,7 @@ public class KhachHangController {
 
     @GetMapping("/yeu-cau-ho-tro/can-bo-sung")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Lấy yêu cầu cần bổ sung
     public ResponseEntity<ApiResponse<List<YeuCauHoTroResponse>>> danhSachYeuCauCanBoSung(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         return ResponseEntity.ok(ApiResponse.ok(
@@ -174,6 +173,7 @@ public class KhachHangController {
 
     @PutMapping("/yeu-cau-ho-tro/{maYeuCau}/bo-sung")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Bổ sung thông tin khiếu nại
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> boSungYeuCau(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maYeuCau,
@@ -182,10 +182,9 @@ public class KhachHangController {
                 yeuCauHoTroService.boSung(user.getTaiKhoan().getMaTaiKhoan(), maYeuCau, request.getNoiDung())));
     }
 
-    // ──────────────────────── DANH MỤC DỊCH VỤ & HÀNH ĐỘNG XANH (Cho Form Đặt
-    // Tour) ─────────
     @GetMapping("/dich-vu-them")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC27 - Đặt tour: Lấy dịch vụ đi kèm
     public ResponseEntity<ApiResponse<List<DichVuThemResponse>>> danhSachDichVuThem(
             @RequestParam(required = false) String maTourThucTe) {
         return ResponseEntity.ok(ApiResponse.ok(dichVuThemService.danhSach(maTourThucTe)));
@@ -193,6 +192,7 @@ public class KhachHangController {
 
     @GetMapping("/hanh-dong-xanh")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC27 - Đặt tour: Lấy hành động xanh để chọn
     public ResponseEntity<ApiResponse<List<HanhDongXanhResponse>>> danhSachHanhDongXanh(
             @RequestParam(required = false) String maTourThucTe) {
         return ResponseEntity.ok(ApiResponse.ok(hanhDongXanhService.danhSach(maTourThucTe)));

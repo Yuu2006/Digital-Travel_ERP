@@ -30,6 +30,7 @@ public class HanhDongXanhController {
     private final HanhDongXanhService hanhDongXanhService;
 
     @GetMapping
+    // UC20 - Cấu hình hành động xanh: Tra cứu hành động áp dụng
     public ResponseEntity<ApiResponse<List<HanhDongXanhResponse>>> danhSach(
             @RequestParam(required = false) String maTourThucTe
     ) {
@@ -37,12 +38,14 @@ public class HanhDongXanhController {
     }
 
     @GetMapping("/{id}")
+    // UC20 - Cấu hình hành động xanh: Xem chi tiết hành động
     public ResponseEntity<ApiResponse<HanhDongXanhResponse>> chiTiet(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(hanhDongXanhService.chiTiet(id)));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC20 - Cấu hình hành động xanh: Tạo hành động xanh
     public ResponseEntity<ApiResponse<HanhDongXanhResponse>> taoMoi(@Valid @RequestBody HanhDongXanhRequest request) {
         HanhDongXanhResponse result = hanhDongXanhService.taoMoi(request);
         return ResponseEntity.status(201).body(ApiResponse.created(result));
@@ -50,6 +53,7 @@ public class HanhDongXanhController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC20 - Cấu hình hành động xanh: Cập nhật hành động xanh
     public ResponseEntity<ApiResponse<HanhDongXanhResponse>> capNhat(
             @PathVariable String id,
             @Valid @RequestBody HanhDongXanhRequest request
@@ -60,6 +64,7 @@ public class HanhDongXanhController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC20 - Cấu hình hành động xanh: Xóa hành động xanh
     public ResponseEntity<ApiResponse<Void>> xoa(@PathVariable String id) {
         hanhDongXanhService.xoa(id);
         return ResponseEntity.ok(ApiResponse.noContent("Xoa hanh dong xanh thanh cong"));

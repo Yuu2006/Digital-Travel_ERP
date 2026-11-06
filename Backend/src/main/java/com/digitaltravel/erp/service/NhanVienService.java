@@ -33,24 +33,23 @@ public class NhanVienService {
     private final HoChieuSoRepository hoChieuSoRepository;
     private final VaiTroRepository vaiTroRepository;
 
-    // ── Tìm kiếm nhân viên (UC68) ─────────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC66 - Tìm kiếm tài khoản: Tra cứu nhân viên
     public Page<NhanVienResponse> timKiem(String hoTen, String maVaiTro, String trangThai, Pageable pageable) {
         return nhanVienRepository.timKiem(hoTen, maVaiTro, trangThai, pageable)
                 .map(this::toResponse);
     }
 
-    // ── Chi tiết nhân viên (UC68) ─────────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC66 - Tìm kiếm tài khoản: Xem chi tiết nhân viên
     public NhanVienResponse chiTiet(String maNhanVien) {
         NhanVien nv = nhanVienRepository.findById(maNhanVien)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay nhan vien: " + maNhanVien));
         return toResponse(nv);
     }
 
-    // ── Khóa tài khoản (UC66) ─────────────────────────────────────────────
-    /** Khóa tài khoản của nhân viên. */
     @Transactional
+    // UC64 - Xóa/Khóa tài khoản: Khóa tài khoản nhân viên
     public void khoaTaiKhoan(String maNhanVien, String nguoiThucHien) {
         NhanVien nv = nhanVienRepository.findById(maNhanVien)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay nhan vien: " + maNhanVien));
@@ -68,9 +67,8 @@ public class NhanVienService {
         taiKhoanRepository.save(tk);
     }
 
-    // ── Mở khóa tài khoản (UC67) ──────────────────────────────────────────
-    /** Mở khóa tài khoản của nhân viên. */
     @Transactional
+    // UC65 - Mở khóa tài khoản: Mở khóa nhân viên
     public void moKhoaTaiKhoan(String maNhanVien) {
         NhanVien nv = nhanVienRepository.findById(maNhanVien)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay nhan vien: " + maNhanVien));
@@ -83,9 +81,8 @@ public class NhanVienService {
         taiKhoanRepository.save(tk);
     }
 
-    // ── UC69: Gán vai trò cho nhân viên ──────────────────────────────────────
-    /** Gán vai trò mới cho nhân viên. */
     @Transactional
+    // UC67 - Phân quyền truy cập: Gán vai trò nhân viên
     public NhanVienResponse ganVaiTro(String maNhanVien, GanVaiTroRequest request) {
         NhanVien nv = nhanVienRepository.findById(maNhanVien)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay nhan vien: " + maNhanVien));
@@ -105,8 +102,7 @@ public class NhanVienService {
         return toResponse(nv);
     }
 
-    // ── UC24: Tìm kiếm thông tin khách hàng ──────────────────────────────────
-    /** Tìm kiếm thông tin khách hàng. */
+    // UC24 - Tra cứu khách hàng: Tìm hồ sơ khách hàng
     public Page<HoChieuSoResponse> timKiemKhachHang(String hoTen, String email, String soDienThoai,
                                                      String maVoucherChuaNhan, Pageable pageable) {
         boolean locKhachChuaNhanVoucher = maVoucherChuaNhan != null && !maVoucherChuaNhan.isBlank();
@@ -117,22 +113,21 @@ public class NhanVienService {
                 .map(this::toHoChieuSoResponse);
     }
 
-    /** Lấy chi tiết thông tin khách hàng. */
+    // UC24 - Tra cứu khách hàng: Xem chi tiết khách hàng
     public HoChieuSoResponse chiTietKhachHang(String maKhachHang) {
         return hoChieuSoRepository.findById(maKhachHang)
                 .map(this::toHoChieuSoResponse)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay khach hang: " + maKhachHang));
     }
 
-    // ── Lấy NhanVien theo maTaiKhoan (dùng cho controller) ───────────────────
-    /** Tìm nhân viên theo mã tài khoản. */
+    // UC66 - Tìm kiếm tài khoản: Tìm nhân viên theo tài khoản
     public NhanVien findNhanVienByTaiKhoan(String maTaiKhoan) {
         return nhanVienRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ nhân viên"));
     }
 
-    // ── Lấy Hồ sơ cá nhân (Dành cho HDV tự xem) ──────────────────────────────
     @Transactional(readOnly = true)
+    // UC63 - Cập nhật năng lực nhân viên: Lấy hồ sơ cá nhân
     public NhanVienResponse layHoSoCaNhan(String maTaiKhoan) {
         NhanVien nv = findNhanVienByTaiKhoan(maTaiKhoan);
         return toResponse(nv);

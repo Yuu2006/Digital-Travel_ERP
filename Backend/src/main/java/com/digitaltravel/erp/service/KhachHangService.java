@@ -32,15 +32,15 @@ public class KhachHangService {
     private final DanhGiaKhRepository danhGiaKhRepository;
     private final YeuCauHoTroRepository yeuCauHoTroRepository;
 
-    // ── Xem hồ sơ của bản thân ──────────────────────────────────────────────
+    // UC21 - Xem thông tin hồ sơ số: Lấy hồ sơ số
     public HoChieuSoResponse layHoSo(String maTaiKhoan) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
         return toResponse(hcs);
     }
 
-    // ── Cập nhật hồ sơ khách hàng ───────────────────────────────────────────
     @Transactional
+    // UC23 - Cập nhật hồ sơ số: Lưu hồ sơ khách hàng
     public HoChieuSoResponse capNhatHoSo(String maTaiKhoan, CapNhatHoChieuSoRequest request) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -74,8 +74,8 @@ public class KhachHangService {
         return toResponse(hcs);
     }
 
-    // ── UC22: Lịch sử tour đã tham gia ──────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC22 - Xem chi tiết lịch sử hành trình: Lấy lịch sử tour
     public Page<LichSuTourResponse> lichSuTour(String maTaiKhoan, Pageable pageable) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));

@@ -16,6 +16,7 @@ import com.digitaltravel.erp.entity.Voucher;
 public interface VoucherRepository extends JpaRepository<Voucher, String> {
 
     @Query("SELECT v FROM Voucher v WHERE v.MaCode = :maCode")
+    // UC28 - Áp dụng Voucher: Tìm voucher theo mã code
     Optional<Voucher> findByMaCode(@Param("maCode") String maCode);
 
     @Query(value = """
@@ -30,6 +31,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, String> {
             SELECT v FROM Voucher v
             ORDER BY v.NgayHieuLuc DESC
             """)
+    // UC52 - Quản lý voucher: Lọc danh sách voucher
     Page<Voucher> timKiem(Pageable pageable);
 
     // Voucher còn hiệu lực và còn lượt dùng (dùng để validate khi áp vào đơn)
@@ -44,5 +46,6 @@ public interface VoucherRepository extends JpaRepository<Voucher, String> {
                     AND k.TrangThai IN ('CO_HIEU_LUC', 'DA_SU_DUNG')
               ) < v.SoLuotPhatHanh
             """)
+    // UC30 - Quy đổi voucher: Lấy voucher còn hiệu lực
     Page<Voucher> findAllActive(@Param("today") LocalDate today, Pageable pageable);
 }

@@ -34,7 +34,7 @@ public interface HoChieuSoRepository extends JpaRepository<HoChieuSo, String> {
             """)
     java.util.List<HoChieuSo> findByCccdOrSoDienThoai(@Param("cccd") String cccd, @Param("soDienThoai") String soDienThoai);
 
-    // UC24: Nhân viên tìm hồ sơ khách hàng
+    // UC24 - Tra cứu khách hàng: Tìm hồ sơ khách hàng
     @Query("""
             SELECT hcs FROM HoChieuSo hcs JOIN FETCH hcs.taiKhoan tk
             WHERE (:hoTen IS NULL OR LOWER(tk.HoTen) LIKE LOWER(CONCAT('%', :hoTen, '%')))

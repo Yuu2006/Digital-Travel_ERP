@@ -66,8 +66,8 @@ public class VanHanhService {
     private final PhanCongTourRepository phanCongTourRepository;
     private final DonDatTourRepository donDatTourRepository;
     private final LichTrinhTourRepository lichTrinhTourRepository;
-
     @Transactional(readOnly = true)
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy lịch trình
     public List<LichTrinhResponse> lichTrinhTour(String maTour, String maTaiKhoan, String maVaiTro) {
         kiemTraQuyenXemLichTrinhTour(maTour, maTaiKhoan, maVaiTro);
         TourThucTe tour = tourThucTeRepository.findById(maTour)
@@ -84,8 +84,8 @@ public class VanHanhService {
                 .toList();
     }
 
-    // ── UC42: Xem danh sách đoàn ─────────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy danh sách đoàn
     public List<ThanhVienDoanResponse> danhSachDoan(String maTour, String maTaiKhoan, String maVaiTro) {
         kiemTraQuyenVanHanhTour(maTour, maTaiKhoan, maVaiTro);
 
@@ -128,7 +128,7 @@ public class VanHanhService {
                         .hoTenKhachHang(ndh.getHoTen())
                         .soDienThoai(ndh.getSoDienThoai())
                         .hangThanhVien("THANH_VIEN")
-                        .ghiChuYTe(ndh.getGhiChu())
+                        .ghiChuYTe(chuanHoaGhiChuNguoiDongHanh(ndh.getGhiChu()))
                         .ghiChuDatTour(don.getGhiChu())
                         .hanhDongXanh(don.getHanhDongXanh())
                         .diemXanh(0L)
@@ -137,6 +137,32 @@ public class VanHanhService {
             });
         });
         return result;
+    }
+
+    private String chuanHoaGhiChuNguoiDongHanh(String ghiChu) {
+        if (ghiChu == null || ghiChu.isBlank()) {
+            return null;
+        }
+        String value = ghiChu.trim();
+        if (java.util.Set.of(
+                "Người đồng hành chính, nhận thông báo lịch trình cùng người đặt.",
+                "Đi cùng nhóm, đã xác nhận thông tin cá nhân.",
+                "Người thân đi cùng người đặt tour",
+                "Thành viên trong đoàn đã cung cấp đủ thông tin cá nhân",
+                "Đi công tác kết hợp nghỉ dưỡng",
+                "Trẻ em đi cùng gia đình").contains(value)) {
+            return null;
+        }
+        if ("Trẻ em".equals(value)) {
+            return "Trẻ em, cần lưu ý lịch nghỉ và bữa ăn phù hợp.";
+        }
+        if ("Người cao tuổi".equals(value)) {
+            return "Người cao tuổi, cần lịch trình nhẹ và hỗ trợ khi di chuyển.";
+        }
+        if ("Có ghi chú cần hỗ trợ ăn uống và giờ nghỉ".equals(value)) {
+            return "Cần hỗ trợ ăn uống và bố trí giờ nghỉ phù hợp.";
+        }
+        return value;
     }
 
     private String gopGhiChuYTeVaDiUng(String ghiChuYTe, String diUng) {
@@ -151,8 +177,8 @@ public class VanHanhService {
         return String.join(" | ", parts);
     }
 
-    // ── UC43: Điểm danh khách ─────────────────────────────────────────────
     @Transactional
+    // UC41 - Điểm danh khách hàng: Cập nhật trạng thái điểm danh
     public DiemDanhResponse diemDanh(String maTour, DiemDanhRequest req, String maTaiKhoan, String maVaiTro) {
         kiemTraQuyenVanHanhTour(maTour, maTaiKhoan, maVaiTro);
         TourThucTe tour = getActiveTour(maTour);
@@ -194,8 +220,8 @@ public class VanHanhService {
         return toDiemDanhResponse(dd);
     }
 
-    // ── UC44: Ghi nhận hành động xanh ────────────────────────────────────
     @Transactional
+    // UC42 - Xác nhận hành động xanh: Cộng điểm cho khách
     public HanhDongResponse ghiNhanHanhDong(String maTour, GhiNhanHanhDongRequest req, String maTaiKhoan,
             String maVaiTro) {
         kiemTraQuyenVanHanhTour(maTour, maTaiKhoan, maVaiTro);
@@ -205,9 +231,6 @@ public class VanHanhService {
         kiemTraKhachThuocTourDaXacNhan(maTour, kh.getMaKhachHang());
         HanhDongXanh hdx = hanhDongXanhRepository.findById(req.getMaHanhDongXanh())
                 .orElseThrow(() -> AppException.notFound("Khong tim thay hanh dong xanh: " + req.getMaHanhDongXanh()));
-        if (!hanhDongXanhRepository.existsAvailableForTour(req.getMaHanhDongXanh(), maTour)) {
-            throw AppException.badRequest("Hanh dong xanh khong thuoc tour thuc te: " + req.getMaHanhDongXanh());
-        }
         if (!hanhDongRepository.findByTourAndKhachAndHanhDong(
                 maTour, kh.getMaKhachHang(), req.getMaHanhDongXanh()).isEmpty()) {
             throw AppException.badRequest("Hành động xanh này đã được ghi nhận cho khách hàng trong tour.");
@@ -232,8 +255,8 @@ public class VanHanhService {
         return toHanhDongResponse(hd, hdx);
     }
 
-    // ── UC45: Báo cáo sự cố ──────────────────────────────────────────────
     @Transactional
+    // UC43 - Báo cáo sự cố: Tạo nhật ký sự cố
     public NhatKySuCoResponse baoCaoSuCo(String maTour, BaoCaoSuCoRequest req, String maTaiKhoan, String maVaiTro) {
         kiemTraQuyenVanHanhTour(maTour, maTaiKhoan, maVaiTro);
         TourThucTe tour = kiemTraHopLeDuLieuSuCo(maTour, req);
@@ -302,8 +325,8 @@ public class VanHanhService {
         }
     }
 
-    // Cập nhật mô tả / giải pháp sự cố
     @Transactional
+    // UC43 - Báo cáo sự cố: Cập nhật nhật ký sự cố
     public NhatKySuCoResponse capNhatSuCo(
             String maSuCo,
             BaoCaoSuCoRequest req,
@@ -324,6 +347,7 @@ public class VanHanhService {
         return toSuCoResponse(sc);
     }
 
+    // UC43 - Báo cáo sự cố: Lọc nhật ký sự cố
     public List<NhatKySuCoResponse> danhSachSuCo(
             String maTour,
             String mucDo,
@@ -334,6 +358,7 @@ public class VanHanhService {
                 .map(this::toSuCoResponse).toList();
     }
 
+    // UC43 - Báo cáo sự cố: Lấy sự cố của HDV
     public List<NhatKySuCoResponse> lichSuSuCoCuaHdv(String mucDo, String maTaiKhoan, String maVaiTro) {
         if (VaiTroConst.HDV.equals(maVaiTro)) {
             return nhatKySuCoRepository.findByHdvTaiKhoan(maTaiKhoan, chuanHoaMucDoSuCoFilter(mucDo)).stream()
@@ -344,8 +369,8 @@ public class VanHanhService {
                 .toList();
     }
 
-    // ── UC46: Khai báo chi phí phát sinh ─────────────────────────────────
     @Transactional
+    // UC44 - Cập nhật chi phí thực tế: Ghi nhận chi phí
     public ChiPhiThucTeResponse khaiChiPhi(String maTour, KhaiChiPhiRequest req, String maTaiKhoan, String maVaiTro) {
         kiemTraQuyenVanHanhTour(maTour, maTaiKhoan, maVaiTro);
         TourThucTe tour = tourThucTeRepository.findById(maTour)
@@ -366,12 +391,14 @@ public class VanHanhService {
         return toChiPhiResponse(cp);
     }
 
+    // UC44 - Cập nhật chi phí thực tế: Lấy chi phí theo tour
     public List<ChiPhiThucTeResponse> chiPhiCuaTour(String maTour, String maTaiKhoan, String maVaiTro) {
         kiemTraQuyenVanHanhTour(maTour, maTaiKhoan, maVaiTro);
         return chiPhiThucTeRepository.findByMaTour(maTour).stream()
                 .map(this::toChiPhiResponse).toList();
     }
 
+    // UC44 - Cập nhật chi phí thực tế: Lấy chi phí của HDV
     public List<ChiPhiThucTeResponse> lichSuChiPhiCuaHdv(String maTaiKhoan, String maVaiTro) {
         if (VaiTroConst.HDV.equals(maVaiTro)) {
             return chiPhiThucTeRepository.findByHdvTaiKhoan(maTaiKhoan).stream()
@@ -382,6 +409,7 @@ public class VanHanhService {
     }
 
     @Transactional
+    // UC47 - Phê duyệt chi phí thực tế: Bổ sung chứng từ
     public ChiPhiThucTeResponse boSungChiPhi(String maChiPhi, KhaiChiPhiRequest req, String maTaiKhoan) {
         ChiPhiThucTe cp = chiPhiThucTeRepository.findById(maChiPhi)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay chi phi: " + maChiPhi));
@@ -400,27 +428,31 @@ public class VanHanhService {
         return toChiPhiResponse(cp);
     }
 
-    // ── Kế toán: DS chi phí chờ duyệt ────────────────────────────────────
+    // UC47 - Phê duyệt chi phí thực tế: Lọc chi phí cần xử lý
     public Page<ChiPhiThucTeResponse> danhSachChiPhiChoXuLy(String trangThai, String maTour, Pageable pageable) {
         return chiPhiThucTeRepository.findByTrangThai(trangThai, maTour, pageable)
                 .map(this::toChiPhiResponse);
     }
 
     @Transactional
+    // UC47 - Phê duyệt chi phí thực tế: Duyệt khoản chi
     public ChiPhiThucTeResponse duyetChiPhi(String maChiPhi) {
         return setTrangThaiChiPhi(maChiPhi, "DA_DUYET");
     }
 
     @Transactional
+    // UC47 - Phê duyệt chi phí thực tế: Từ chối khoản chi
     public ChiPhiThucTeResponse tuChoiChiPhi(String maChiPhi) {
         return setTrangThaiChiPhi(maChiPhi, "TU_CHOI");
     }
 
     @Transactional
+    // UC47 - Phê duyệt chi phí thực tế: Yêu cầu bổ sung khoản chi
     public ChiPhiThucTeResponse yeuCauBoSungChiPhi(String maChiPhi) {
         return setTrangThaiChiPhi(maChiPhi, "YEU_CAU_BO_SUNG");
     }
 
+    // UC46 - Xem cảnh báo chi phí: Lọc cảnh báo
     public Page<CanhBaoChiPhiResponse> danhSachCanhBaoChiPhi(String trangThai, String loaiCanhBao,
             String mucDo, String maTour, Pageable pageable) {
         List<CanhBaoChiPhiResponse> canhBao = chiPhiThucTeRepository.findAllWithRelations().stream()
@@ -436,6 +468,7 @@ public class VanHanhService {
         return new PageImpl<>(canhBao.subList(start, end), pageable, canhBao.size());
     }
 
+    // UC46 - Xem cảnh báo chi phí: Xem chi tiết cảnh báo
     public CanhBaoChiPhiResponse chiTietCanhBaoChiPhi(String maCanhBao) {
         return chiPhiThucTeRepository.findAllWithRelations().stream()
                 .flatMap(cp -> taoCanhBaoDong(cp).stream())
@@ -619,7 +652,7 @@ public class VanHanhService {
                 .soDienThoai(kh != null ? kh.getTaiKhoan().getSoDienThoai()
                         : (nguoiDongHanh != null ? nguoiDongHanh.getSoDienThoai() : null))
                 .hangThanhVien(kh != null ? kh.getHangThanhVien() : "THANH_VIEN")
-                .ghiChuYTe(kh != null ? kh.getGhiChuYTe() : (nguoiDongHanh != null ? nguoiDongHanh.getGhiChu() : null))
+                .ghiChuYTe(kh != null ? kh.getGhiChuYTe() : (nguoiDongHanh != null ? chuanHoaGhiChuNguoiDongHanh(nguoiDongHanh.getGhiChu()) : null))
                 .diemXanh(kh != null ? kh.getDiemXanh() : 0L)
                 .build();
     }
@@ -657,7 +690,7 @@ public class VanHanhService {
                 .maKhachHang(kh != null ? kh.getMaKhachHang() : null)
                 .maNguoiDongHanh(nguoiDongHanh != null ? nguoiDongHanh.getMaNguoiDongHanh() : null)
                 .hoTenKhachHang(hoTenKhachHang)
-                .ghiChuYTe(kh != null ? kh.getGhiChuYTe() : (nguoiDongHanh != null ? nguoiDongHanh.getGhiChu() : null))
+                .ghiChuYTe(kh != null ? kh.getGhiChuYTe() : (nguoiDongHanh != null ? chuanHoaGhiChuNguoiDongHanh(nguoiDongHanh.getGhiChu()) : null))
                 .diUng(kh != null ? kh.getDiUng() : null)
                 .thoiGianBaoCao(sc.getThoiGianBaoCao())
                 .build();

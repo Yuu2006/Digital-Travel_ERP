@@ -25,6 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final TaiKhoanDetailsService taiKhoanDetailsService;
 
     @Override
+    // UC57 - Đăng nhập: Xác thực JWT cho yêu cầu
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,

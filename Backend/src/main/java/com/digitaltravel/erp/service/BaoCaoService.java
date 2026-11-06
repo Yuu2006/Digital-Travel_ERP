@@ -23,7 +23,7 @@ public class BaoCaoService {
     private final DonDatTourRepository donDatTourRepository;
     private final TourThucTeRepository tourThucTeRepository;
 
-    // ── UC53: Báo cáo doanh thu ──────────────────────────────────────────────
+    // UC51 - Trích xuất dữ liệu phân tích: Tổng hợp doanh thu
     public BaoCaoDoanhThuResponse baoCaoDoanhThu(LocalDate tuNgay, LocalDate denNgay) {
         LocalDateTime from = tuNgay != null ? tuNgay.atStartOfDay() : LocalDateTime.MIN;
         LocalDateTime to = denNgay != null ? denNgay.plusDays(1).atStartOfDay() : LocalDateTime.now();

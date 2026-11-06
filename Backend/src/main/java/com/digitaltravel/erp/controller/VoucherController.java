@@ -24,11 +24,6 @@ import com.digitaltravel.erp.service.VoucherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-/**
- * UC28 — Áp dụng voucher vào đơn đặt tour
- * UC30 — Đổi điểm xanh lấy voucher
- * UC31 — Xem ví voucher
- */
 @RestController
 @RequestMapping("/api/khach-hang")
 @RequiredArgsConstructor
@@ -36,9 +31,9 @@ public class VoucherController {
 
     private final VoucherService voucherService;
 
-    // ── UC31: Xem ví voucher của tôi ─────────────────────────────────────────
     @GetMapping("/vi-voucher")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC31 - Xem danh sách voucher: Lấy ví voucher
     public ResponseEntity<ApiResponse<Page<KhuyenMaiKhResponse>>> viVoucher(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PageableDefault(size = 10, sort = "NgayNhan", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -46,17 +41,17 @@ public class VoucherController {
                 voucherService.viVoucher(user.getTaiKhoan().getMaTaiKhoan(), pageable)));
     }
 
-    // UC30: Danh sach voucher dang san sang de khach hang doi bang diem xanh
     @GetMapping("/voucher-co-the-doi")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC30 - Quy đổi voucher: Lấy kho ưu đãi
     public ResponseEntity<ApiResponse<Page<VoucherResponse>>> voucherCoTheDoi(
             @PageableDefault(size = 20, sort = "NgayHetHan", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(voucherService.danhSachCoTheDoi(pageable)));
     }
 
-    // ── UC28: Áp dụng voucher vào đơn ────────────────────────────────────────
     @PostMapping("/ap-voucher")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC28 - Áp dụng Voucher: Tính giảm giá cho đơn
     public ResponseEntity<ApiResponse<VoucherResponse>> apVoucher(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody ApVoucherRequest request) {
@@ -64,9 +59,9 @@ public class VoucherController {
                 voucherService.apVoucher(user.getTaiKhoan().getMaTaiKhoan(), request)));
     }
 
-    // ── UC30: Đổi điểm xanh lấy voucher ─────────────────────────────────────
     @PostMapping("/doi-diem")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC30 - Quy đổi voucher: Đổi điểm lấy voucher
     public ResponseEntity<ApiResponse<KhuyenMaiKhResponse>> doiDiem(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody DoiDiemVoucherRequest request) {

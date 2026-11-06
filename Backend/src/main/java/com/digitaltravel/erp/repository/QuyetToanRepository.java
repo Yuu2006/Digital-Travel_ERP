@@ -16,9 +16,11 @@ import com.digitaltravel.erp.entity.QuyetToan;
 public interface QuyetToanRepository extends JpaRepository<QuyetToan, String> {
 
         @Query("SELECT qt FROM QuyetToan qt WHERE qt.tourThucTe.MaTourThucTe = :maTour")
+        // UC48 - Quyết toán tour: Tìm quyết toán theo tour
         Optional<QuyetToan> findByTourThucTe_MaTourThucTe(@Param("maTour") String maTour);
 
         @Query("SELECT CASE WHEN COUNT(qt) > 0 THEN true ELSE false END FROM QuyetToan qt WHERE qt.tourThucTe.MaTourThucTe = :maTour")
+        // UC48 - Quyết toán tour: Kiểm tra tour đã có quyết toán
         boolean existsByTourThucTe_MaTourThucTe(@Param("maTour") String maTour);
 
         @Query("""
@@ -30,6 +32,7 @@ public interface QuyetToanRepository extends JpaRepository<QuyetToan, String> {
                         WHERE (:trangThai IS NULL OR qt.TrangThai = :trangThai)
                         ORDER BY qt.NgayQuyetToan DESC
                         """)
+        // UC48 - Quyết toán tour: Lọc quyết toán theo trạng thái
         Page<QuyetToan> findByTrangThai(@Param("trangThai") String trangThai, Pageable pageable);
 
         /* Lấy các quyết toán chưa chốt thuộc những tour HDV đã đồng ý phụ trách. */
@@ -45,6 +48,7 @@ public interface QuyetToanRepository extends JpaRepository<QuyetToan, String> {
                           AND qt.TrangThai = 'CHUA_QUYET_TOAN'
                         ORDER BY qt.NgayQuyetToan DESC
                         """)
+        // UC48 - Quyết toán tour: Lấy quyết toán cần HDV bổ sung
         List<QuyetToan> findChuaQuyetToanTheoHdv(@Param("maTaiKhoan") String maTaiKhoan);
 
         // Thống kê doanh thu theo khoảng thời gian (quyết toán đã chốt)
@@ -54,6 +58,7 @@ public interface QuyetToanRepository extends JpaRepository<QuyetToan, String> {
                         WHERE qt.TrangThai = 'DA_QUYET_TOAN'
                           AND qt.NgayQuyetToan BETWEEN :tuNgay AND :denNgay
                         """)
+        // UC51 - Trích xuất dữ liệu phân tích: Thống kê doanh thu
         List<Object[]> thongKeDoanhThu(
                         @Param("tuNgay") java.time.LocalDateTime tuNgay,
                         @Param("denNgay") java.time.LocalDateTime denNgay);
@@ -70,11 +75,11 @@ public interface QuyetToanRepository extends JpaRepository<QuyetToan, String> {
                         GROUP BY qt.tourThucTe.MaTourThucTe, qt.tourThucTe.tourMau.TieuDe
                         ORDER BY SUM(qt.TongDoanhThu) DESC
                         """)
+        // UC51 - Trích xuất dữ liệu phân tích: Lấy top tour doanh thu
         List<Object[]> topTourDoanhThu(
                         @Param("tuNgay") java.time.LocalDateTime tuNgay,
                         @Param("denNgay") java.time.LocalDateTime denNgay);
 
-        // UC51: Xuất dữ liệu doanh thu cho Power BI
         @Query("""
                         SELECT qt FROM QuyetToan qt
                         JOIN FETCH qt.tourThucTe tt
@@ -83,6 +88,7 @@ public interface QuyetToanRepository extends JpaRepository<QuyetToan, String> {
                           AND (:denNgay IS NULL OR qt.NgayQuyetToan < :denNgay)
                         ORDER BY qt.NgayQuyetToan DESC
                         """)
+        // UC51 - Trích xuất dữ liệu phân tích: Xuất dữ liệu doanh thu
         java.util.List<QuyetToan> xuatDuLieuDoanhThu(
                         @Param("tuNgay") java.time.LocalDateTime tuNgay,
                         @Param("denNgay") java.time.LocalDateTime denNgay);

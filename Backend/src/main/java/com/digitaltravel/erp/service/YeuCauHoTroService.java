@@ -40,8 +40,8 @@ public class YeuCauHoTroService {
     private final NhanVienRepository nhanVienRepository;
     private final PhanCongTourRepository phanCongTourRepository;
 
-    // ── UC36: KH tạo yêu cầu hỗ trợ / khiếu nại ────────────────────────────
     @Transactional
+    // UC36 - Khiếu nại: Tạo yêu cầu hỗ trợ
     public YeuCauHoTroResponse taoYeuCau(String maTaiKhoan, YeuCauHoTroRequest request) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -72,7 +72,7 @@ public class YeuCauHoTroService {
         return toResponse(yc);
     }
 
-    // ── UC36: KH xem danh sách yêu cầu của mình ─────────────────────────────
+    // UC36 - Khiếu nại: Lấy yêu cầu của khách
     public Page<YeuCauHoTroResponse> danhSachCuaKhachHang(String maTaiKhoan, String loaiYeuCau, Pageable pageable) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -82,6 +82,7 @@ public class YeuCauHoTroService {
     }
 
     @Transactional(readOnly = true)
+    // UC39 - Giải quyết khiếu nại: Lấy yêu cầu cần bổ sung
     public List<YeuCauHoTroResponse> danhSachCanKhachHangBoSung(String maTaiKhoan) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -91,8 +92,8 @@ public class YeuCauHoTroService {
                 .toList();
     }
 
-    // ── Bổ sung bằng chứng ───────────────────────────────────────────────────
     @Transactional
+    // UC39 - Giải quyết khiếu nại: Khách bổ sung thông tin
     public YeuCauHoTroResponse boSung(String maTaiKhoan, String maYeuCau, String noiDungBoSung) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -116,14 +117,14 @@ public class YeuCauHoTroService {
         return toResponse(yc);
     }
 
-    // ── UC41: SALES xem tất cả yêu cầu ──────────────────────────────────────
+    // UC39 - Giải quyết khiếu nại: Lọc tất cả yêu cầu
     public Page<YeuCauHoTroResponse> danhSachTatCa(String loaiYeuCau, String trangThai, Pageable pageable) {
         return yeuCauHoTroRepository.timKiem(loaiYeuCau, trangThai, pageable)
                 .map(this::toResponse);
     }
 
-    // ── UC41: SALES tiếp nhận xử lý ──────────────────────────────────────────
     @Transactional
+    // UC39 - Giải quyết khiếu nại: Cập nhật kết quả xử lý
     public YeuCauHoTroResponse xuLy(String maYeuCau, XuLyHoTroRequest request, String maTaiKhoanXuLy) {
         YeuCauHoTro yc = yeuCauHoTroRepository.findById(maYeuCau)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy yêu cầu: " + maYeuCau));
@@ -156,6 +157,7 @@ public class YeuCauHoTroService {
     }
 
     @Transactional
+    // UC39 - Giải quyết khiếu nại: Yêu cầu HDV giải trình
     public YeuCauHoTroResponse yeuCauHdvGiaiTrinh(String maYeuCau, String noiDungYeuCau) {
         YeuCauHoTro yc = yeuCauHoTroRepository.findById(maYeuCau)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy yêu cầu: " + maYeuCau));
@@ -186,6 +188,7 @@ public class YeuCauHoTroService {
     }
 
     @Transactional
+    // UC39 - Giải quyết khiếu nại: Yêu cầu khách bổ sung
     public YeuCauHoTroResponse yeuCauKhachHangBoSung(String maYeuCau, String noiDungYeuCau) {
         YeuCauHoTro yc = yeuCauHoTroRepository.findById(maYeuCau)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy yêu cầu: " + maYeuCau));
@@ -204,6 +207,7 @@ public class YeuCauHoTroService {
     }
 
     @Transactional(readOnly = true)
+    // UC39 - Giải quyết khiếu nại: Lấy yêu cầu giải trình
     public List<YeuCauHoTroResponse> danhSachGiaiTrinhCuaHdv(String maTaiKhoan) {
         NhanVien hdv = nhanVienRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ nhân viên"));
@@ -214,6 +218,7 @@ public class YeuCauHoTroService {
     }
 
     @Transactional
+    // UC39 - Giải quyết khiếu nại: HDV cập nhật giải trình
     public YeuCauHoTroResponse hdvCapNhatGiaiTrinh(String maTaiKhoan, String maYeuCau, String noiDungGiaiTrinh) {
         NhanVien hdv = nhanVienRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ nhân viên"));
@@ -237,7 +242,7 @@ public class YeuCauHoTroService {
         return toResponse(yc);
     }
 
-    // ── Chi tiết yêu cầu ─────────────────────────────────────────────────────
+    // UC39 - Giải quyết khiếu nại: Xem chi tiết yêu cầu
     public YeuCauHoTroResponse chiTiet(String maYeuCau) {
         YeuCauHoTro yc = yeuCauHoTroRepository.findById(maYeuCau)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy yêu cầu: " + maYeuCau));

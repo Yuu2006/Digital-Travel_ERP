@@ -28,6 +28,7 @@ public class NhatKyHeThongService {
     private final TaiKhoanRepository taiKhoanRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    // UC68 - Xem nhật ký hệ thống: Ghi nhận thao tác hệ thống
     public void ghiNhan(String maTaiKhoan, String hanhDong, String doiTuong, String maDoiTuong) {
         TaiKhoan taiKhoan = maTaiKhoan != null
                 ? taiKhoanRepository.findById(maTaiKhoan).orElse(null)
@@ -42,6 +43,7 @@ public class NhatKyHeThongService {
     }
 
     @Transactional(readOnly = true)
+    // UC68 - Xem nhật ký hệ thống: Lọc nhật ký hệ thống
     public Page<NhatKyHeThongResponse> timKiem(
             String maTaiKhoan,
             String hanhDong,

@@ -36,8 +36,8 @@ public class HuyTourService {
     private final YeuCauHoTroRepository yeuCauHoTroRepository;
     private final GiaoDichRepository giaoDichRepository;
 
-    // ── UC32: Khách hàng gửi yêu cầu hủy tour ─────────────────────────────
     @Transactional
+    // UC32 - Hủy tour: Tạo yêu cầu hủy tour
     public YeuCauHoTroResponse yeuCauHuyTour(String maTaiKhoan, String maDatTour, HuyTourRequest request) {
         HoChieuSo kh = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -84,7 +84,7 @@ public class HuyTourService {
         yc.setKhachHang(kh);
         yc.setLoaiYeuCau("HUY_TOUR");
         yc.setNoiDung(String.format(
-                "Ly do: %s | Ngay con lai den khoi hanh: %d | Ti le hoan: %d%% | So tien hoan: %s",
+                "- Lý do: %s\n- Ngày còn lại đến khởi hành: %d\n- Tỉ lệ hoàn: %d%%\n- Số tiền hoàn: %s",
                 request.getLyDo(), soNgayConLai, tiLeHoan, soTienHoan.toPlainString()));
         yc.setTrangThai("CHUA_XU_LY");
         yeuCauHoTroRepository.save(yc);
@@ -98,8 +98,8 @@ public class HuyTourService {
         return toResponse(yc, soTienHoan, tiLeHoan);
     }
 
-    // ── UC33: SALES duyệt yêu cầu hủy ────────────────────────────────────
     @Transactional
+    // UC32 - Hủy tour: Duyệt yêu cầu và khởi tạo hoàn tiền
     public YeuCauHoTroResponse duyetHuyTour(String maYeuCau, String maNhanVien, XuLyYeuCauRequest request) {
         YeuCauHoTro yc = yeuCauHoTroRepository.findById(maYeuCau)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay yeu cau: " + maYeuCau));
@@ -124,8 +124,8 @@ public class HuyTourService {
         return toResponse(yc, soTienHoan, 0);
     }
 
-    // ── UC33: SALES từ chối yêu cầu hủy ─────────────────────────────────
     @Transactional
+    // UC32 - Hủy tour: Từ chối yêu cầu hủy
     public YeuCauHoTroResponse tuChoiHuyTour(String maYeuCau, String maNhanVien, XuLyYeuCauRequest request) {
         YeuCauHoTro yc = yeuCauHoTroRepository.findById(maYeuCau)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay yeu cau: " + maYeuCau));
@@ -139,7 +139,7 @@ public class HuyTourService {
         don.setTrangThai("DA_XAC_NHAN");
         donDatTourRepository.save(don);
 
-        String noiDung = yc.getNoiDung() + " | TU_CHOI: " + (request.getGhiChu() != null ? request.getGhiChu() : "");
+        String noiDung = yc.getNoiDung() + "\n- Từ chối: " + (request.getGhiChu() != null ? request.getGhiChu() : "");
         yc.setNoiDung(noiDung);
         yc.setTrangThai("TU_CHOI");
         yeuCauHoTroRepository.save(yc);
@@ -147,7 +147,7 @@ public class HuyTourService {
         return toResponse(yc, BigDecimal.ZERO, 0);
     }
 
-    // ── Danh sách yêu cầu (cho SALES xem) ───────────────────────────────
+    // UC32 - Hủy tour: Lọc yêu cầu hủy tour
     public Page<YeuCauHoTroResponse> danhSachYeuCau(String loaiYeuCau, String trangThai, Pageable pageable) {
         return yeuCauHoTroRepository.timKiem(loaiYeuCau, trangThai, pageable)
                 .map(yc -> toResponse(yc, BigDecimal.ZERO, 0));
@@ -167,9 +167,9 @@ public class HuyTourService {
     private BigDecimal tinhSoTienHoanTuNoiDung(String noiDung, BigDecimal tongTien) {
         // Parse tỉ lệ từ NoiDung (pattern: "Ti le hoan: XX%")
         try {
-            int idx = noiDung.indexOf("Ti le hoan: ");
+            int idx = noiDung.indexOf("Tỉ lệ hoàn: ");
             if (idx >= 0) {
-                String sub = noiDung.substring(idx + "Ti le hoan: ".length());
+                String sub = noiDung.substring(idx + "Tỉ lệ hoàn: ".length());
                 int pct = Integer.parseInt(sub.substring(0, sub.indexOf('%')).trim());
                 return tongTien.multiply(BigDecimal.valueOf(pct))
                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);

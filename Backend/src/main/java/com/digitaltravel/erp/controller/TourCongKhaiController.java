@@ -25,10 +25,6 @@ import com.digitaltravel.erp.service.HanhDongXanhService;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * UC25 — Xem danh sách tour công khai (không cần đăng nhập)
- * UC26 — Xem chi tiết tour kèm lịch trình + đánh giá (không cần đăng nhập)
- */
 @RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor
@@ -39,8 +35,8 @@ public class TourCongKhaiController {
     private final DichVuThemService dichVuThemService;
     private final HanhDongXanhService hanhDongXanhService;
 
-    // ── UC25: Danh sách tour đang mở bán ─────────────────────────────────────
     @GetMapping("/tour")
+    // UC25 - Tra cứu tour: Lọc danh sách tour công khai
     public ResponseEntity<ApiResponse<Page<TourThucTeResponse>>> danhSachTour(
             @RequestParam(required = false) java.math.BigDecimal giaTu,
             @RequestParam(required = false) java.math.BigDecimal giaDen,
@@ -51,30 +47,30 @@ public class TourCongKhaiController {
                 tourThucTeService.danhSachCongKhai(giaTu, giaDen, thoiLuongMin, thoiLuongMax, pageable)));
     }
 
-    // ── UC26: Chi tiết tour + lịch trình ─────────────────────────────────────
     @GetMapping("/tour/{maTourThucTe}")
+    // UC26 - Xem chi tiết tour: Lấy thông tin tour công khai
     public ResponseEntity<ApiResponse<TourCongKhaiResponse>> chiTietTour(
             @PathVariable String maTourThucTe) {
         return ResponseEntity.ok(ApiResponse.ok(tourThucTeService.chiTietCongKhai(maTourThucTe)));
     }
 
-    // ── UC26: Đánh giá của tour ───────────────────────────────────────────────
     @GetMapping("/tour/{maTourThucTe}/danh-gia")
+    // UC35 - Đánh giá: Lấy phản hồi theo tour
     public ResponseEntity<ApiResponse<Page<DanhGiaKhResponse>>> danhGiaTour(
             @PathVariable String maTourThucTe,
             @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(danhGiaService.danhSachDanhGia(maTourThucTe, pageable)));
     }
 
-    // ── UC26: Hành động xanh của tour ─────────────────────────────────────────
     @GetMapping("/tour/{maTourThucTe}/hanh-dong-xanh")
+    // UC27 - Đặt tour: Lấy hành động xanh của tour
     public ResponseEntity<ApiResponse<List<HanhDongXanhResponse>>> hanhDongXanhTour(
             @PathVariable String maTourThucTe) {
         return ResponseEntity.ok(ApiResponse.ok(hanhDongXanhService.danhSach(maTourThucTe)));
     }
 
-    // ── UC26: Dịch vụ bổ sung của tour ─────────────────────────────────────
     @GetMapping("/tour/{maTourThucTe}/dich-vu-them")
+    // UC27 - Đặt tour: Lấy dịch vụ thêm của tour
     public ResponseEntity<ApiResponse<List<DichVuThemResponse>>> dichVuThemTour(
             @PathVariable String maTourThucTe) {
         return ResponseEntity.ok(ApiResponse.ok(dichVuThemService.danhSach(maTourThucTe)));

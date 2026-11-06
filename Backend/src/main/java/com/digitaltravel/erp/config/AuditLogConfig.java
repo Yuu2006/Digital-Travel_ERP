@@ -30,11 +30,13 @@ public class AuditLogConfig implements HandlerInterceptor, WebMvcConfigurer {
     private final NhatKyHeThongService nhatKyHeThongService;
 
     @Override
+    // UC68 - Xem nhật ký hệ thống: Đăng ký ghi nhận audit
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(this).addPathPatterns("/api/**");
     }
 
     @Override
+    // UC68 - Xem nhật ký hệ thống: Ghi log sau xử lý API
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
             org.springframework.web.servlet.ModelAndView modelAndView) {
         if (response.getStatus() >= 400 || !(handler instanceof HandlerMethod handlerMethod)

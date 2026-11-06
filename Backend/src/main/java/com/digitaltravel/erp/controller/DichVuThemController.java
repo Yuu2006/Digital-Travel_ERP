@@ -29,17 +29,20 @@ public class DichVuThemController {
     private final DichVuThemService dichVuThemService;
 
     @GetMapping
+    // UC19 - Tra cứu dịch vụ: Lấy danh mục dịch vụ bổ sung
     public ResponseEntity<ApiResponse<List<DichVuThemResponse>>> danhSach() {
         return ResponseEntity.ok(ApiResponse.ok(dichVuThemService.danhSach()));
     }
 
     @GetMapping("/{id}")
+    // UC19 - Tra cứu dịch vụ: Xem chi tiết dịch vụ bổ sung
     public ResponseEntity<ApiResponse<DichVuThemResponse>> chiTiet(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(dichVuThemService.chiTiet(id)));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC16 - Thêm dịch vụ: Tạo dịch vụ bổ sung
     public ResponseEntity<ApiResponse<DichVuThemResponse>> taoMoi(@Valid @RequestBody DichVuThemRequest request) {
         DichVuThemResponse result = dichVuThemService.taoMoi(request);
         return ResponseEntity.status(201).body(ApiResponse.created(result));
@@ -47,6 +50,7 @@ public class DichVuThemController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC17 - Sửa thông tin dịch vụ: Cập nhật dịch vụ bổ sung
     public ResponseEntity<ApiResponse<DichVuThemResponse>> capNhat(
             @PathVariable String id,
             @Valid @RequestBody DichVuThemRequest request
@@ -56,6 +60,7 @@ public class DichVuThemController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SANPHAM', 'ADMIN')")
+    // UC18 - Xóa dịch vụ: Loại bỏ dịch vụ bổ sung
     public ResponseEntity<ApiResponse<Void>> xoa(@PathVariable String id) {
         dichVuThemService.xoa(id);
         return ResponseEntity.ok(ApiResponse.noContent("Xoa dich vu thanh cong"));

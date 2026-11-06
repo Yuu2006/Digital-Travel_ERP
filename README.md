@@ -1,343 +1,295 @@
-<p align="center"><img width="454" height="126" alt="image" src="https://github.com/user-attachments/assets/2036c003-62d1-42f1-9817-6cca86de0fc8" /> </p>
+<div align="center">
 
-# Digital Travel ERP
+# 🌏 Digital Travel ERP
 
-**Đề tài:** Hệ thống quản lí vận hành du lịch số  
-**Kiến trúc:** Oracle Database · Spring Boot Backend · React/Vite Frontend  
-**Repository:** Monorepo gồm `Backend` và 3 ứng dụng Frontend: `Admin`, `HDV`, `Khachhang`
+### Hệ thống quản lý vận hành du lịch số
 
-**Nguồn source tích hợp:**
+**Đồ án môn Nhập môn Công nghệ phần mềm · SE104.R13**<br>
+Trường Đại học Công nghệ Thông tin · ĐHQG TP. Hồ Chí Minh
 
-| Thành phần | Repository nguồn | Branch |
-|---|---|---|
-| Backend | [Yuu2006/Do-An-TravelERP](https://github.com/Yuu2006/Do-An-TravelERP) | `main` |
-| Frontend Admin | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `main` |
-| Frontend HDV | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `ui-ux/hdv` |
-| Frontend Khách hàng | [ThorBietBay001/Frontend-Digital-Travel-ERP](https://github.com/ThorBietBay001/Frontend-Digital-Travel-ERP) | `ui-ux/KH` |
+![SE104](https://img.shields.io/badge/SE104-Nhóm_31-1D4ED8?style=for-the-badge)
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-Backend-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![React](https://img.shields.io/badge/React-TypeScript-149ECA?style=for-the-badge&logo=react&logoColor=white)
+![Oracle](https://img.shields.io/badge/Oracle-Database-C74634?style=for-the-badge)
 
----
+[Giới thiệu](#giới-thiệu) · [Chức năng](#chức-năng-chính) · [Công nghệ](#công-nghệ-sử-dụng) · [Kiến trúc](#kiến-trúc-hệ-thống) · [Cài đặt](#cài-đặt-và-chạy-dự-án) · [Thành viên](#thành-viên-nhóm)
 
-## Mục lục
-
-1. [Giới thiệu đồ án](#giới-thiệu-đồ-án)
-2. [Cây thư mục](#cây-thư-mục)
-3. [Công nghệ và công cụ sử dụng](#công-nghệ-và-công-cụ-sử-dụng)
-4. [Yêu cầu môi trường](#yêu-cầu-môi-trường)
-5. [Hướng dẫn cài đặt và chạy dự án](#hướng-dẫn-cài-đặt-và-chạy-dự-án)
-6. [Tài khoản seed](#tài-khoản-seed)
-7. [Lỗi thường gặp](#lỗi-thường-gặp)
-8. [Thành viên nhóm](#thành-viên-nhóm)
+</div>
 
 ---
 
-## Giới thiệu đồ án
+## Thông tin đồ án
 
-Digital Travel ERP là hệ thống hỗ trợ quản lí và vận hành nghiệp vụ du lịch theo nhiều phân hệ:
-
-| Phân hệ | Vai trò chính |
+| Nội dung | Thông tin |
 |---|---|
-| Khách hàng | Tra cứu tour, đặt tour, thanh toán, quản lí hồ sơ số, voucher, khiếu nại |
-| Admin / Quản trị | Quản lí tài khoản, phân quyền, nhân sự, nhật ký hệ thống |
-| Sản phẩm | Quản lí tour mẫu, dịch vụ bổ sung, hành động xanh |
-| Điều hành | Khởi tạo tour thực tế, phân công hướng dẫn viên, quản lí lịch công tác |
-| Hướng dẫn viên | Xem tour được phân công, điểm danh, báo cáo sự cố, cập nhật chi phí |
-| Kinh doanh | Quản lí đơn đặt tour, khách hàng, voucher, yêu cầu hỗ trợ |
-| Kế toán | Duyệt chi phí, xử lí hoàn tiền, quyết toán tour, báo cáo doanh thu |
+| Đề tài | Xây dựng hệ thống quản lý vận hành du lịch số |
+| Môn học | SE104 — Nhập môn Công nghệ phần mềm |
+| Lớp | SE104.R13 |
+| Nhóm | 31 |
+| Giảng viên hướng dẫn | TS. Nguyễn Thị Xuân Hương |
+| Repository | [DigitalTravelERP_SE104](https://github.com/tienlelttt/DigitalTravelERP_SE104) |
+| Giai đoạn | Thiết kế và xây dựng hệ thống |
 
-Backend cung cấp REST API bảo vệ bằng JWT/RBAC. Frontend gồm ba giao diện riêng cho nhóm người dùng khác nhau, cùng gọi API qua prefix `/api`.
+## Giới thiệu
+
+**Digital Travel ERP** là hệ thống quản lý dành cho doanh nghiệp lữ hành, kết nối khách hàng, nhân viên văn phòng và hướng dẫn viên trong cùng một quy trình nghiệp vụ. Hệ thống được thiết kế để quản lý xuyên suốt từ xây dựng sản phẩm tour, tiếp nhận đơn đặt, thanh toán, điều phối nhân sự đến vận hành đoàn và quyết toán tài chính.
+
+Đồ án tập trung vào ba mục tiêu:
+
+- **Quản lý tập trung:** liên kết thông tin tour, khách hàng, nhân sự và giao dịch, hạn chế việc nhập liệu rời rạc giữa các bộ phận.
+- **Hỗ trợ vận hành:** theo dõi lịch công tác, phân công hướng dẫn viên, điểm danh, sự cố và chi phí phát sinh theo từng chuyến.
+- **Nâng cao trải nghiệm:** cung cấp hồ sơ số, lịch sử hành trình và chương trình điểm xanh gắn với hoạt động du lịch bền vững.
+
+Phạm vi thiết kế gồm **68 use case**, được tổ chức thành các phân hệ nghiệp vụ. Tiến độ triển khai và nghiệm thu được quản lý riêng theo từng yêu cầu.
+
+### Ba cổng giao diện
+
+| Cổng | Người sử dụng | Trọng tâm |
+|---|---|---|
+| **Khách hàng** | Khách du lịch | Tìm tour, đặt dịch vụ, thanh toán và quản lý hành trình |
+| **Quản trị & nghiệp vụ** | Quản trị viên, Sản phẩm, Kinh doanh, Điều hành, Kế toán | Quản lý tài nguyên, giao dịch, nhân sự và tài chính |
+| **Hướng dẫn viên** | HDV được phân công | Lịch công tác, danh sách đoàn, điểm danh, sự cố và chi phí |
 
 ---
 
-## Cây thư mục
+## Chức năng chính
+
+### Khách hàng
+
+- Đăng ký, đăng nhập, quản lý mật khẩu và hồ sơ cá nhân.
+- Tìm kiếm, lọc và xem chi tiết tour, lịch trình, dịch vụ bổ sung.
+- Đặt tour cho bản thân và người đồng hành; áp dụng voucher, theo dõi thanh toán.
+- Xem đơn hàng, yêu cầu hủy tour, theo dõi hoàn tiền và lịch sử hành trình.
+- Quản lý hộ chiếu số, điểm xanh, hạng thành viên và ví voucher.
+- Gửi đánh giá, khiếu nại và yêu cầu hỗ trợ.
+
+### Quản trị và nhân viên nghiệp vụ
+
+- **Quản trị:** quản lý tài khoản, khóa/mở khóa, phân quyền và nhật ký hệ thống.
+- **Sản phẩm:** quản lý tour mẫu, lịch trình, dịch vụ, hành động xanh và thông tin sản phẩm.
+- **Điều hành:** khởi tạo tour thực tế, quản lý trạng thái chuyến, tra cứu năng lực/lịch rảnh và phân công HDV.
+- **Kinh doanh:** tra cứu khách hàng, xử lý đơn đặt, đối soát thanh toán, yêu cầu hủy, hỗ trợ và chương trình ưu đãi.
+- **Kế toán:** duyệt chi phí, theo dõi hoàn tiền, tính doanh thu/lợi nhuận, quyết toán và xuất dữ liệu báo cáo.
+
+### Hướng dẫn viên
+
+- Xem lịch công tác, tour được phân công và phản hồi nhận/từ chối phân công.
+- Tra cứu lịch trình, danh sách đoàn và thông tin cần thiết phục vụ chuyến đi.
+- Điểm danh khách hàng, xác nhận hành động xanh.
+- Ghi nhận và cập nhật sự cố; gửi thông tin giải trình khi có yêu cầu.
+- Kê khai chi phí thực tế, đính kèm chứng từ và bổ sung theo phản hồi của kế toán.
+
+### Xử lý tự động và báo cáo
+
+- Điều chỉnh giá bán theo quy tắc định giá động.
+- Xử lý đơn quá hạn, hiệu lực voucher và các chuyển trạng thái theo thời gian.
+- Tổng hợp doanh thu, chi phí và lợi nhuận theo tour/khoảng thời gian.
+- Xuất Excel/CSV và cung cấp dữ liệu phục vụ phân tích bằng Power BI.
+
+## Công nghệ sử dụng
+
+| Thành phần | Công nghệ |
+|---|---|
+| Backend | Java 21, Spring Boot, Maven |
+| API | REST API, Spring Web, Jakarta Bean Validation |
+| Xác thực và phân quyền | Spring Security, JWT, BCrypt |
+| Truy cập dữ liệu | Spring Data JPA, Hibernate, Oracle JDBC |
+| Cơ sở dữ liệu | Oracle Database; SQL, PL/SQL |
+| Frontend | React, TypeScript, Vite, Tailwind CSS |
+| Kết nối và điều hướng | Axios, React Router |
+| Thống kê và xuất dữ liệu | Recharts, Apache POI, OpenCSV, Power BI |
+| Tài liệu và kiểm thử API | OpenAPI/Swagger, Postman |
+| Kiểm thử backend | JUnit, Mockito, Spring Boot Test |
+| Quản lý phát triển | Git, GitHub Issues, Pull Requests |
+
+## Kiến trúc hệ thống
+
+Hệ thống gồm ba ứng dụng web sử dụng chung backend và cơ sở dữ liệu:
+
+```mermaid
+flowchart LR
+    KH[Web Khách hàng] --> API[REST API / JWT]
+    AD[Web Quản trị và nhân viên] --> API
+    HDV[Web Hướng dẫn viên] --> API
+    API --> C[Controller]
+    C --> S[Service]
+    S --> R[Repository]
+    R --> DB[(Oracle Database)]
+```
+
+Backend phân tách lớp tiếp nhận yêu cầu, xử lý nghiệp vụ và truy cập dữ liệu. DTO xác định dữ liệu trao đổi với frontend; transaction và ràng buộc Oracle bảo đảm tính nhất quán của đơn hàng, quỹ chỗ, voucher và giao dịch.
+
+## Cấu trúc dự án
+
+Cấu trúc thống nhất để triển khai dự án:
+
+<details>
+<summary><b>Xem cấu trúc thư mục</b></summary>
 
 ```text
-Digital-Travel_ERP/
-├─ Backend/
-│  ├─ src/
-│  │  ├─ main/
-│  │  │  ├─ java/com/digitaltravel/erp/
-│  │  │  │  ├─ config/          # Security, JWT, CORS, role constants
-│  │  │  │  ├─ controller/      # REST API theo phân hệ
-│  │  │  │  ├─ dto/             # Request/response DTO
-│  │  │  │  ├─ entity/          # JPA entity mapping Oracle
-│  │  │  │  ├─ exception/       # Global exception handler
-│  │  │  │  ├─ repository/      # Spring Data JPA repositories
-│  │  │  │  ├─ service/         # Business logic và scheduler
-│  │  │  │  └─ DigitalTravelErpApplication.java
-│  │  │  └─ resources/
-│  │  │     ├─ application.yaml
-│  │  │     └─ db/
-│  │  │        ├─ KhoiTaoBang.sql
-│  │  │        ├─ data_v1.sql
-│  │  │        └─ data_lien_ket.sql
-│  │  └─ test/
-│  ├─ mvnw
-│  ├─ mvnw.cmd
-│  ├─ pom.xml
-│  ├─ README.md
-│  └─ HUONGDAN.md
-├─ Frontend/
-│  ├─ Admin/                    # Giao diện quản trị/nhân viên nội bộ
-│  │  ├─ src/
-│  │  ├─ public/
-│  │  ├─ package.json
-│  │  └─ vite.config.ts
-│  ├─ HDV/                      # Giao diện hướng dẫn viên
-│  │  ├─ src/
-│  │  ├─ public/
-│  │  ├─ package.json
-│  │  └─ vite.config.ts
-│  └─ Khachhang/                # Giao diện khách hàng
-│     ├─ src/
-│     ├─ public/
-│     ├─ package.json
-│     └─ vite.config.ts
-├─ .gitignore
-└─ README.md
+DigitalTravelERP_SE104/
+├── backend/                         # REST API Java Spring Boot
+│   ├── .mvn/                        # Maven Wrapper
+│   ├── src/main/java/com/digitaltravel/erp/
+│   │   ├── config/                  # Security, JWT và cấu hình ứng dụng
+│   │   ├── controller/              # Các nhóm API
+│   │   ├── dto/                     # Request và response
+│   │   ├── entity/                  # Ánh xạ dữ liệu Oracle
+│   │   ├── repository/              # Truy vấn dữ liệu
+│   │   ├── service/                 # Xử lý nghiệp vụ
+│   │   └── exception/               # Xử lý lỗi tập trung
+│   ├── src/main/resources/          # Cấu hình và tài nguyên
+│   ├── src/test/                    # Unit test và integration test
+│   ├── mvnw.cmd
+│   └── pom.xml
+├── frontend/
+│   ├── admin/                       # Quản trị và nhân viên nghiệp vụ
+│   ├── hdv/                         # Hướng dẫn viên
+│   └── kh/                          # Khách hàng
+├── database/
+│   ├── ddl/                         # Bảng, ràng buộc và các đối tượng PL/SQL
+│   ├── seed/                        # Dữ liệu mẫu phục vụ phát triển
+│   └── checks/                      # SQL kiểm tra tính toàn vẹn
+├── docs/                            # Yêu cầu, thiết kế, kiểm thử và báo cáo
+└── README.md
 ```
 
----
+</details>
 
-## Công nghệ và công cụ sử dụng
+## Cài đặt và chạy dự án
 
-### Backend
+> Hướng dẫn bên dưới xác định môi trường và quy ước chạy cho dự án đang xây dựng. Các lệnh áp dụng khi mã nguồn và script khởi tạo tương ứng đã được bổ sung vào repository.
 
-| Nhóm | Công nghệ |
-|---|---|
-| Ngôn ngữ | Java 21 |
-| Framework | Spring Boot 4.0.5 |
-| Security | Spring Security, JWT |
-| ORM | Spring Data JPA, Hibernate |
-| Database | Oracle 19c/21c, JDBC `ojdbc11` |
-| Validation | Jakarta Bean Validation |
-| API Docs | Springdoc OpenAPI, Swagger UI |
-| Build | Maven Wrapper |
-| Utility | Lombok, HikariCP |
+<details>
+<summary><b>Thiết lập môi trường và chạy toàn bộ hệ thống</b></summary>
 
-### Frontend
+### 1. Yêu cầu môi trường
 
-| Ứng dụng | Công nghệ chính |
-|---|---|
-| `Frontend/Admin` | React 19, TypeScript, Vite, Tailwind CSS, Axios, React Router, Recharts, Lucide React |
-| `Frontend/HDV` | React 19, TypeScript, Vite, Tailwind CSS, Axios, React Router, Lucide React |
-| `Frontend/Khachhang` | React 19, TypeScript, Vite, Tailwind CSS, Radix UI, Axios, React Router, Sonner, Lucide React |
+- **Git** để quản lý mã nguồn.
+- **JDK 21** và biến môi trường `JAVA_HOME`.
+- **Node.js 22.12+**, npm; phiên bản dependency được chốt bằng lockfile.
+- **Oracle Database** cùng schema riêng dành cho phát triển.
+- **SQL Developer**, SQLcl hoặc công cụ tương đương để chạy SQL/PLSQL.
 
-### Công cụ phát triển
-
-| Công cụ | Mục đích |
-|---|---|
-| Git/GitHub | Quản lí mã nguồn |
-| SQL Developer / DBeaver / SQL*Plus | Chạy script Oracle |
-| Node.js + npm | Cài đặt và chạy frontend |
-| Maven Wrapper | Build và chạy backend |
-| Swagger UI | Kiểm thử API backend |
-
----
-
-## Yêu cầu môi trường
-
-| Thành phần | Phiên bản / ghi chú |
-|---|---|
-| JDK | Java 21 trở lên |
-| Node.js | Khuyến nghị Node.js 20 trở lên |
-| npm | Đi kèm Node.js |
-| Database | Oracle 19c/21c hoặc Oracle XE có service/PDB |
-| Port backend | `8080` |
-| Port frontend | Vite mặc định `5173`, nếu bận sẽ tự chuyển sang port tiếp theo |
-
-Các frontend đã cấu hình Vite proxy:
-
-```ts
-'/api' -> 'http://localhost:8080'
-```
-
-Vì vậy khi chạy local, cần chạy frontend bằng `npm run dev` để proxy hoạt động.
-
----
-
-## Hướng dẫn cài đặt và chạy dự án
-
-Thứ tự chạy khuyến nghị:
-
-1. Khởi tạo Database
-2. Chạy Backend
-3. Chạy Frontend
-
-### 1. Clone repository
+### 2. Clone repository
 
 ```powershell
-git clone https://github.com/Yuu2006/Digital-Travel_ERP.git
-cd Digital-Travel_ERP
+git clone https://github.com/tienlelttt/DigitalTravelERP_SE104.git
+cd DigitalTravelERP_SE104
 ```
 
-### 2. Khởi tạo Database
+### 3. Cấu hình backend và cơ sở dữ liệu
 
-Tạo Oracle user/schema phù hợp, ví dụ:
+Tạo file `backend/.env` theo cấu hình môi trường của dự án:
 
-```sql
-CREATE USER ERP_APP IDENTIFIED BY ERP123;
-GRANT CONNECT, RESOURCE TO ERP_APP;
-ALTER USER ERP_APP QUOTA UNLIMITED ON USERS;
-```
-
-Đăng nhập vào schema vừa tạo bằng SQL Developer, DBeaver hoặc SQL*Plus, sau đó chạy script theo thứ tự:
-
-```sql
-@Backend/src/main/resources/db/KhoiTaoBang.sql
-@Backend/src/main/resources/db/Data_tai_khoan.sql
-@Backend/src/main/resources/db/data_khoi_tao.sql
-```
-
-Ý nghĩa các file:
-
-| File | Nội dung |
-|---|---|
-| `KhoiTaoBang.sql` | Tạo bảng, khóa chính, khóa ngoại, constraint, index |
-| `data_v1.sql` | Seed vai trò, tài khoản nhân viên, dữ liệu nền |
-| `data_lien_ket.sql` | Seed dữ liệu liên kết phục vụ demo nghiệp vụ |
-
-### 3. Cấu hình Backend
-
-Tạo file `Backend/.env` trên máy local, không commit file này:
-
-```properties
+```dotenv
 DB_HOST=localhost
 DB_PORT=1521
-DB_SERVICE=pdb
-DB_USERNAME=ERP_APP
-DB_PASSWORD=ERP123
-
-JWT_SECRET=ZGlnaXRhbC10cmF2ZWwtZXJwLXNlY3JldC1rZXktbXVzdC1iZS00Mi1jaGFycy1sb25nLW1pbg==
+DB_SERVICE=XEPDB1
+DB_USERNAME=digital_travel
+DB_PASSWORD=your_local_password
+JWT_SECRET=your_random_base64_secret
 JWT_EXPIRATION=86400000
-
-PAYMENT_MOCK_ENABLED=true
+SERVER_PORT=8080
+PAYMENT_MOCK_ENABLED=false
 ```
 
-Nếu Oracle dùng service name khác, sửa `DB_SERVICE` tương ứng, ví dụ `XEPDB1`, `orcl`, `pdb`.
+`DB_SERVICE` và thông tin đăng nhập phải khớp schema Oracle trên máy. Khóa JWT cần được sinh ngẫu nhiên cho từng môi trường. Backend sẽ được cấu hình đọc các biến này từ môi trường chạy hoặc file `.env`.
 
-### 4. Chạy Backend
+Khởi tạo các đối tượng trong `database/ddl/`, sau đó nạp `database/seed/` và chạy kiểm tra trong `database/checks/` theo thứ tự được mô tả cùng các script. Dùng schema phát triển riêng; đọc kỹ các lệnh xóa/tạo lại dữ liệu trước khi thực thi.
+
+### 4. Chạy backend
+
+Tại thư mục gốc repository:
 
 ```powershell
-cd Backend
+cd backend
 .\mvnw.cmd spring-boot:run
 ```
 
-Backend chạy tại:
+| Dịch vụ | Địa chỉ cục bộ |
+|---|---|
+| Backend API | `http://localhost:8080` |
+| Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
+| OpenAPI | `http://localhost:8080/v3/api-docs` |
 
-```text
-http://localhost:8080
-```
+### 5. Chạy frontend
 
-Swagger UI:
+Mở terminal riêng cho từng ứng dụng, bắt đầu từ thư mục gốc repository:
 
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-Kiểm tra nhanh backend:
+**Web quản trị và nhân viên**
 
 ```powershell
-Invoke-WebRequest -UseBasicParsing http://localhost:8080/api/auth/debug
-Invoke-WebRequest -UseBasicParsing http://localhost:8080/api/public/tour
+cd frontend/admin
+npm ci
+npm run dev -- --port 5173 --strictPort
 ```
 
-### 5. Cài đặt và chạy Frontend
-
-Mở terminal mới từ thư mục root repository.
-
-#### Admin
+**Web hướng dẫn viên**
 
 ```powershell
-cd Frontend\Admin
-npm install
-npm run dev
+cd frontend/hdv
+npm ci
+npm run dev -- --port 5174 --strictPort
 ```
 
-#### Hướng dẫn viên
+**Web khách hàng**
 
 ```powershell
-cd Frontend\HDV
-npm install
-npm run dev
+cd frontend/kh
+npm ci
+npm run dev -- --port 5175 --strictPort
 ```
 
-#### Khách hàng
+Quy ước tích hợp: frontend gọi API qua prefix `/api`; Vite proxy chuyển yêu cầu tới backend tại `http://localhost:8080`. Khi thay đổi cổng backend cần cập nhật cấu hình proxy tương ứng.
+
+</details>
+
+## Kiểm thử và build
+
+**Backend** — chạy trong `backend/`:
 
 ```powershell
-cd Frontend\Khachhang
-npm install
-npm run dev
+.\mvnw.cmd test
+.\mvnw.cmd clean package
 ```
 
-Sau khi chạy, mở URL Vite in ra trong terminal, ví dụ:
+Integration test liên quan đến dữ liệu cần schema Oracle kiểm thử riêng và cấu hình phù hợp.
 
-```text
-http://localhost:5173
-```
-
-Nếu port `5173` đang bận, Vite có thể tự chuyển sang `5174`, `5175`,... Hãy mở đúng URL hiển thị ở terminal.
-
-### 6. Build kiểm tra
-
-Backend:
+**Frontend** — chạy trong từng ứng dụng `admin`, `hdv`, `kh`:
 
 ```powershell
-cd Backend
-.\mvnw.cmd clean package -DskipTests
-```
-
-Frontend:
-
-```powershell
-cd Frontend\Admin
-npm run build
-
-cd ..\HDV
-npm run build
-
-cd ..\Khachhang
+npm run lint
 npm run build
 ```
 
----
+Các nhóm kiểm thử trọng tâm gồm xác thực/phân quyền, quyền sở hữu dữ liệu, đặt tour đồng thời, voucher, thanh toán lặp, hủy/hoàn tiền, phân công HDV, điểm danh, duyệt chi phí và khóa dữ liệu sau quyết toán. Kết quả kiểm thử được ghi nhận theo từng phiên bản.
 
-## Tài khoản seed
-
-Mật khẩu mặc định cho các tài khoản seed trong `data_v1.sql`: `password`
-
-| Vai trò | Username | Giao diện / phân hệ |
-|---|---|---|
-| `ADMIN` | `admin` | Admin |
-| `SANPHAM` | `sanpham01` | Admin - sản phẩm |
-| `DIEUHANH` | `manager01` | Admin - điều hành |
-| `KINHDOANH` | `sales01` | Admin - kinh doanh |
-| `KETOAN` | `ketoan01` | Admin - kế toán |
-| `HDV` | `hdv01` | HDV |
-| `HDV` | `hdv02` | HDV |
-
-Tài khoản khách hàng có thể đăng ký từ giao diện khách hàng hoặc dùng dữ liệu seed nếu đã có trong database demo.
-
----
-
-## Lỗi thường gặp
-
-| Hiện tượng | Nguyên nhân thường gặp | Cách xử lý |
-|---|---|---|
-| Backend không start | Sai cấu hình Oracle hoặc chưa chạy DB | Kiểm tra `Backend/.env`, port `1521`, service/PDB |
-| Lỗi validate schema | Chưa chạy SQL hoặc schema không đúng | Chạy lại `KhoiTaoBang.sql`, `data_v1.sql`, `data_lien_ket.sql` |
-| FE gọi API bị `Failed to fetch` | Backend chưa chạy hoặc gọi sai port | Chạy backend ở `8080`, chạy FE bằng `npm run dev` |
-| FE mở nhầm giao diện cũ | Vite app cũ còn giữ port hoặc browser cache | Dừng process Node cũ, mở đúng URL Vite in ra, hard refresh `Ctrl + F5` |
-| API trả `401 Unauthorized` | Chưa đăng nhập hoặc token hết hạn | Đăng nhập lại |
-| API trả `403 Forbidden` | Tài khoản không đúng vai trò | Dùng đúng tài khoản theo phân hệ |
-| Admin/HDV/Khachhang gọi `/api` không sang backend | Không chạy bằng Vite dev server | Chạy `npm run dev`, không mở trực tiếp file HTML |
-
----
+Thanh toán mô phỏng chỉ được bật trên môi trường demo bằng `PAYMENT_MOCK_ENABLED=true`; không đại diện cho tích hợp cổng thanh toán thực tế.
 
 ## Thành viên nhóm
 
-| STT | MSSV | Họ và Tên | GitHub | Email |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | 24521817 | Đoàn Thị Thuỳ Trang | https://github.com/ThorBietBay001 | 24521817@gm.uit.edu.vn |
-| 2 | 24521769 | Lê Thị Thanh Tiền | https://github.com/tienlelttt | 24521769@gm.uit.edu.vn |
-| 3 | 24521776 | Nguyễn Trần Thủy Tiên | https://github.com/NgKthy | 24521776@gm.uit.edu.vn |
-| 4 | 24522039 | Nguyễn Tuấn Vũ | https://github.com/Yuu2006 | 24522039@gm.uit.edu.vn |
+<p align="center">
+  <a href="https://github.com/tienlelttt"><img src="https://github.com/tienlelttt.png?size=80" width="64" height="64" alt="Lê Thị Thanh Tiền" /></a>
+  &nbsp;
+  <a href="https://github.com/ThorBietBay001"><img src="https://github.com/ThorBietBay001.png?size=80" width="64" height="64" alt="Đoàn Thị Thùy Trang" /></a>
+  &nbsp;
+  <a href="https://github.com/NgKthy"><img src="https://github.com/NgKthy.png?size=80" width="64" height="64" alt="Nguyễn Trần Thủy Tiên" /></a>
+  &nbsp;
+  <a href="https://github.com/Yuu2006"><img src="https://github.com/Yuu2006.png?size=80" width="64" height="64" alt="Nguyễn Tuấn Vũ" /></a>
+  &nbsp;
+  <a href="https://github.com/thanhtri271206"><img src="https://avatars.githubusercontent.com/u/255110882?s=80&v=4" width="64" height="64" alt="Bùi Phan Thành Trí" /></a>
+</p>
+
+| STT | MSSV | Họ và tên | Vai trò chính | GitHub |
+|:---:|---|---|---|---|
+| 1 | 24521769 | **Lê Thị Thanh Tiền** | **Trưởng nhóm** · FE Khách hàng & HDV · API | [tienlelttt](https://github.com/tienlelttt) |
+| 2 | 24521817 | Đoàn Thị Thùy Trang | FE Quản trị & nghiệp vụ · API | [ThorBietBay001](https://github.com/ThorBietBay001) |
+| 3 | 24521776 | Nguyễn Trần Thủy Tiên | Thiết kế & phát triển CSDL Oracle | [NgKthy](https://github.com/NgKthy) |
+| 4 | 24522039 | Nguyễn Tuấn Vũ | Backend · Nền tảng & giao dịch | [Yuu2006](https://github.com/Yuu2006) |
+| 5 | 24521825 | Bùi Phan Thành Trí | Backend · Vận hành & tài chính | [thanhtri271206](https://github.com/thanhtri271206) |
+
+## Tài liệu dự án
+
+Tài liệu yêu cầu, use case, thiết kế hệ thống, cơ sở dữ liệu, kiểm thử và báo cáo môn học được tổ chức trong thư mục `docs/` theo từng giai đoạn phát triển.

@@ -44,6 +44,7 @@ public class DanhGiaService {
     private final YeuCauHoTroRepository yeuCauHoTroRepository;
 
     @Transactional
+    // UC35 - Đánh giá: Lưu đánh giá khách hàng
     public DanhGiaKhResponse guiDanhGia(String maTaiKhoan, DanhGiaRequest request) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -82,6 +83,7 @@ public class DanhGiaService {
         return toResponse(dg);
     }
 
+    // UC35 - Đánh giá: Lọc đánh giá theo tour
     public Page<DanhGiaKhResponse> danhSachDanhGia(String maTourThucTe, Pageable pageable) {
         TourThucTe tour = tourThucTeRepository.findById(maTourThucTe)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy tour: " + maTourThucTe));
@@ -89,6 +91,7 @@ public class DanhGiaService {
                 .map(this::toResponse);
     }
 
+    // UC35 - Đánh giá: Lấy toàn bộ đánh giá
     public Page<DanhGiaKhResponse> tatCaDanhGia(Pageable pageable) {
         return danhGiaKhRepository.findAllWithDetails(pageable).map(this::toResponse);
     }

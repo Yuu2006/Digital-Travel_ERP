@@ -20,7 +20,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -55,10 +55,10 @@ logging:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:ZGlnaXRhbC10cmF2ZWwtZXJwLXNlY3JldC1rZXktbXVzdC1iZS00Mi1jaGFycy1sb25nLW1pbg==}
+    secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:86400000}
   payment:
-    mock-enabled: ${PAYMENT_MOCK_ENABLED:true}
+    mock-enabled: ${PAYMENT_MOCK_ENABLED:false}
   powerbi:
     db-host: ${POWERBI_DB_HOST:${DB_HOST:localhost}}
     db-port: ${POWERBI_DB_PORT:${DB_PORT:1521}}

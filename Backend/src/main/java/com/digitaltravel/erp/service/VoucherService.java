@@ -46,9 +46,8 @@ public class VoucherService {
     private final HoChieuSoRepository hoChieuSoRepository;
     private final NhatKyDoiDiemRepository nhatKyDoiDiemRepository;
 
-    // ── UC31: Xem ví voucher của khách hàng ─────────────────────────────────
-    /** Lấy ví voucher của khách hàng. */
     @Transactional
+    // UC31 - Xem danh sách voucher: Lấy ví voucher
     public Page<KhuyenMaiKhResponse> viVoucher(String maTaiKhoan, Pageable pageable) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -57,9 +56,8 @@ public class VoucherService {
                 .map(this::toKhuyenMaiKhResponse);
     }
 
-    // ── UC28: Áp dụng voucher vào đơn đặt tour ──────────────────────────────
-    /** Áp dụng voucher vào đơn đặt tour. */
     @Transactional(noRollbackFor = AppException.class)
+    // UC28 - Áp dụng Voucher: Áp mã vào đơn hàng
     public VoucherResponse apVoucher(String maTaiKhoan, ApVoucherRequest request) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -125,9 +123,8 @@ public class VoucherService {
         return toVoucherResponse(voucher);
     }
 
-    // ── UC30: Đổi điểm xanh lấy voucher ────────────────────────────────────
-    /** Đổi điểm xanh lấy voucher. */
     @Transactional
+    // UC30 - Quy đổi voucher: Đổi điểm xanh lấy ưu đãi
     public KhuyenMaiKhResponse doiDiem(String maTaiKhoan, DoiDiemVoucherRequest request) {
         HoChieuSo hcs = hoChieuSoRepository.findByMaTaiKhoan(maTaiKhoan)
                 .orElseThrow(() -> AppException.notFound("Không tìm thấy hồ sơ khách hàng"));
@@ -146,9 +143,8 @@ public class VoucherService {
         return toKhuyenMaiKhResponse(kmkh);
     }
 
-    // ── UC53: Admin tạo voucher mới ─────────────────────────────────────────
-    /** Tạo voucher mới. */
     @Transactional
+    // UC53 - Tạo voucher: Tạo mã ưu đãi
     public VoucherResponse taoVoucher(VoucherRequest request, String nguoiTao) {
         String maCode = request.getMaCode().trim();
 
@@ -194,9 +190,8 @@ public class VoucherService {
         return "VC" + ((maxVoucherNumber != null ? maxVoucherNumber : 0) + 1);
     }
 
-    // ── UC52: Admin cập nhật voucher ────────────────────────────────────────
-    /** Cập nhật thông tin voucher. */
     @Transactional
+    // UC52 - Quản lý voucher: Cập nhật mã ưu đãi
     public VoucherResponse capNhatVoucher(String maVoucher, VoucherRequest request, String nguoiCapNhat) {
         Voucher v = voucherRepository.findById(maVoucher)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay voucher: " + maVoucher));
@@ -240,9 +235,8 @@ public class VoucherService {
         return toVoucherResponse(v);
     }
 
-    // ── UC54: Admin phát hành voucher cho khách hàng ────────────────────────
-    /** Phát hành voucher cho khách hàng. */
     @Transactional
+    // UC54 - Phân phối và thu hồi voucher: Phân phối ưu đãi
     public KhuyenMaiKhResponse phatHanhChoKhachHang(String maVoucher, PhatHanhVoucherRequest request, String nguoiTao) {
         Voucher voucher = voucherRepository.findById(maVoucher)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay voucher: " + maVoucher));
@@ -288,8 +282,8 @@ public class VoucherService {
         return toKhuyenMaiKhResponse(kmkh);
     }
 
-    /** Vô hiệu hóa voucher. */
     @Transactional
+    // UC52 - Quản lý voucher: Vô hiệu hóa mã ưu đãi
     public VoucherResponse voHieuHoaVoucher(String maVoucher, String nguoiCapNhat) {
         Voucher voucher = voucherRepository.findById(maVoucher)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay voucher: " + maVoucher));
@@ -298,8 +292,8 @@ public class VoucherService {
         return toVoucherResponse(voucher);
     }
 
-    /** Thu hồi voucher đã phát hành cho khách hàng. */
     @Transactional
+    // UC54 - Phân phối và thu hồi voucher: Thu hồi ưu đãi
     public KhuyenMaiKhResponse thuHoiVoucher(String maVoucher, String maKhachHang, String nguoiCapNhat) {
         KhuyenMaiKh kmkh = khuyenMaiKhRepository.findByKhachHangAndVoucher(maKhachHang, maVoucher)
                 .orElseThrow(() -> AppException.notFound("Khách hàng không có voucher này trong ví"));
@@ -312,17 +306,17 @@ public class VoucherService {
         return toKhuyenMaiKhResponse(kmkh);
     }
 
-    // ── Danh sách voucher (Admin) ────────────────────────────────────────────
-    /** Lấy danh sách voucher quản trị. */
+    // UC52 - Quản lý voucher: Lọc danh sách voucher
     public Page<VoucherResponse> danhSach(Pageable pageable) {
         return voucherRepository.timKiem(pageable).map(this::toVoucherResponse);
     }
 
-    /** Lấy danh sách voucher có thể đổi. */
+    // UC30 - Quy đổi voucher: Lấy kho ưu đãi có thể đổi
     public Page<VoucherResponse> danhSachCoTheDoi(Pageable pageable) {
         return voucherRepository.findAllActive(LocalDate.now(), pageable).map(this::toVoucherResponse);
     }
 
+    // UC54 - Phân phối và thu hồi voucher: Lấy khách đã nhận
     public List<KhuyenMaiKhResponse> danhSachKhachHangDaPhanBo(String maVoucher) {
         if (!voucherRepository.existsById(maVoucher)) {
             throw AppException.notFound("Khong tim thay voucher: " + maVoucher);
@@ -333,8 +327,7 @@ public class VoucherService {
                 .toList();
     }
 
-    // ── Chi tiết voucher ────────────────────────────────────────────────────
-    /** Lấy chi tiết voucher. */
+    // UC52 - Quản lý voucher: Xem chi tiết voucher
     public VoucherResponse chiTiet(String maVoucher) {
         Voucher v = voucherRepository.findById(maVoucher)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay voucher: " + maVoucher));

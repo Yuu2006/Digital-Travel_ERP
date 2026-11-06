@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digitaltravel.erp.config.TaiKhoanDetails;
 import com.digitaltravel.erp.dto.requests.BoSungQuyetToanRequest;
 import com.digitaltravel.erp.dto.requests.BoSungRequest;
-import com.digitaltravel.erp.dto.requests.BoSungQuyetToanRequest;
 import com.digitaltravel.erp.dto.requests.GanVaiTroRequest;
 import com.digitaltravel.erp.dto.requests.NangLucRequest;
 import com.digitaltravel.erp.dto.requests.XuLyHoTroRequest;
@@ -60,11 +59,9 @@ public class NhanVienController {
 
     // ──────────────── QUẢN LÝ NHÂN VIÊN (ADMIN/MANAGER) ──────────────────
 
-    /**
-     * UC68 — Danh sách nhân viên (filter + phân trang)
-     */
     @GetMapping("/api/quan-tri/nhan-vien")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC66 - Tìm kiếm tài khoản: Tra cứu nhân viên theo bộ lọc
     public ResponseEntity<ApiResponse<Page<NhanVienResponse>>> danhSachNhanVien(
             @RequestParam(required = false) String hoTen,
             @RequestParam(required = false) String maVaiTro,
@@ -74,21 +71,17 @@ public class NhanVienController {
                 nhanVienService.timKiem(hoTen, maVaiTro, trangThai, pageable)));
     }
 
-    /**
-     * UC68 — Chi tiết nhân viên
-     */
     @GetMapping("/api/quan-tri/nhan-vien/{maNhanVien}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC66 - Tìm kiếm tài khoản: Xem chi tiết nhân viên
     public ResponseEntity<ApiResponse<NhanVienResponse>> chiTietNhanVien(
             @PathVariable String maNhanVien) {
         return ResponseEntity.ok(ApiResponse.ok(nhanVienService.chiTiet(maNhanVien)));
     }
 
-    /**
-     * UC66 — Khóa tài khoản nhân viên
-     */
     @PutMapping("/api/quan-tri/nhan-vien/{maNhanVien}/khoa")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    // UC64 - Xóa/Khóa tài khoản: Cập nhật trạng thái khóa
     public ResponseEntity<ApiResponse<Void>> khoaTaiKhoan(
             @PathVariable String maNhanVien,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -96,11 +89,9 @@ public class NhanVienController {
         return ResponseEntity.ok(ApiResponse.noContent("Khoa tai khoan nhan vien thanh cong"));
     }
 
-    /**
-     * UC67 — Mở khóa tài khoản nhân viên
-     */
     @PutMapping("/api/quan-tri/nhan-vien/{maNhanVien}/mo-khoa")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    // UC65 - Mở khóa tài khoản: Khôi phục trạng thái hoạt động
     public ResponseEntity<ApiResponse<Void>> moKhoaTaiKhoan(@PathVariable String maNhanVien) {
         nhanVienService.moKhoaTaiKhoan(maNhanVien);
         return ResponseEntity.ok(ApiResponse.noContent("Mo khoa tai khoan nhan vien thanh cong"));
@@ -108,11 +99,9 @@ public class NhanVienController {
 
     // ──────────────── XỬ LÝ YÊU CẦU HỦY TOUR (SALES/MANAGER) ───────────
 
-    /**
-     * UC33 — Danh sách yêu cầu hủy/hoàn tiền
-     */
     @GetMapping("/api/kinh-doanh/yeu-cau-huy")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Lọc yêu cầu hỗ trợ
     public ResponseEntity<ApiResponse<Page<YeuCauHoTroResponse>>> danhSachYeuCau(
             @RequestParam(required = false) String loaiYeuCau,
             @RequestParam(required = false) String trangThai,
@@ -121,11 +110,9 @@ public class NhanVienController {
                 huyTourService.danhSachYeuCau(loaiYeuCau, trangThai, pageable)));
     }
 
-    /**
-     * UC33 — SALES duyệt yêu cầu hủy tour
-     */
     @PostMapping("/api/kinh-doanh/yeu-cau-huy/{maYeuCau}/duyet")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC32 - Hủy tour: Duyệt yêu cầu hủy tour
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> duyetHuyTour(
             @PathVariable String maYeuCau,
             @AuthenticationPrincipal TaiKhoanDetails user,
@@ -136,11 +123,9 @@ public class NhanVienController {
         return ResponseEntity.ok(ApiResponse.ok("Duyet huy tour thanh cong", result));
     }
 
-    /**
-     * UC33 — SALES từ chối yêu cầu hủy tour
-     */
     @PostMapping("/api/kinh-doanh/yeu-cau-huy/{maYeuCau}/tu-choi")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC32 - Hủy tour: Từ chối yêu cầu hủy tour
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> tuChoiHuyTour(
             @PathVariable String maYeuCau,
             @AuthenticationPrincipal TaiKhoanDetails user,
@@ -158,6 +143,7 @@ public class NhanVienController {
      */
     @GetMapping("/api/huong-dan-vien/tour-cua-toi")
     @PreAuthorize("hasAnyRole('HDV', 'DIEUHANH', 'ADMIN')")
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy tour được phân công
     public ResponseEntity<ApiResponse<List<PhanCongResponse>>> tourCuaToi(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         String maTaiKhoan = user.getTaiKhoan().getMaTaiKhoan();
@@ -166,6 +152,7 @@ public class NhanVienController {
 
     @PostMapping("/api/huong-dan-vien/phan-cong/{maPhanCong}/dong-y")
     @PreAuthorize("hasAnyRole('HDV', 'ADMIN')")
+    // UC37 - Điều phối HDV: HDV xác nhận nhận tour
     public ResponseEntity<ApiResponse<PhanCongResponse>> dongYPhanCong(
             @PathVariable String maPhanCong,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -176,6 +163,7 @@ public class NhanVienController {
 
     @PostMapping("/api/huong-dan-vien/phan-cong/{maPhanCong}/tu-choi")
     @PreAuthorize("hasAnyRole('HDV', 'ADMIN')")
+    // UC37 - Điều phối HDV: HDV từ chối phân công
     public ResponseEntity<ApiResponse<PhanCongResponse>> tuChoiPhanCong(
             @PathVariable String maPhanCong,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -189,18 +177,17 @@ public class NhanVienController {
      */
     @GetMapping("/api/huong-dan-vien/hanh-dong-xanh")
     @PreAuthorize("hasAnyRole('HDV', 'DIEUHANH', 'ADMIN')")
-    public ResponseEntity<ApiResponse<List<com.digitaltravel.erp.dto.responses.HanhDongXanhResponse>>> danhSachHanhDongXanh(
-            @RequestParam(required = false) String maTourThucTe) {
-        return ResponseEntity.ok(ApiResponse.ok(hanhDongXanhService.danhSach(maTourThucTe)));
+    // UC42 - Xác nhận hành động xanh: Lấy danh mục hành động
+    public ResponseEntity<ApiResponse<List<com.digitaltravel.erp.dto.responses.HanhDongXanhResponse>>> danhSachHanhDongXanh() {
+        return ResponseEntity.ok(ApiResponse.ok(hanhDongXanhService.danhSachChung()));
     }
-
-    // ──────────────── UC39: HDV xem lịch công tác ─────────────────────────
 
     /**
      * Xem lịch công tác của hướng dẫn viên.
      */
     @GetMapping({"/api/huong-dan-vien/lich-cong-tac", "/api/dieu-hanh/lich-cong-tac"})
     @PreAuthorize("hasAnyRole('HDV', 'DIEUHANH', 'ADMIN')")
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy lịch công tác HDV
     public ResponseEntity<ApiResponse<List<PhanCongResponse>>> lichCongTac(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         String maTaiKhoan = user.getTaiKhoan().getMaTaiKhoan();
@@ -212,18 +199,18 @@ public class NhanVienController {
      */
     @GetMapping("/api/dieu-hanh/nhan-vien/{maNhanVien}/lich-cong-tac")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy lịch công tác nhân viên
     public ResponseEntity<ApiResponse<List<PhanCongResponse>>> lichCongTacNhanVien(
             @PathVariable String maNhanVien) {
         return ResponseEntity.ok(ApiResponse.ok(phanCongTourService.lichCongTacNhanVien(maNhanVien)));
     }
-
-    // ──────────────── UC24: Tìm kiếm khách hàng ──────────────────────────
 
     /**
      * Tìm kiếm khách hàng cho kinh doanh.
      */
     @GetMapping("/api/kinh-doanh/khach-hang")
     @PreAuthorize("hasAnyRole('ADMIN', 'SANPHAM', 'KINHDOANH', 'DIEUHANH', 'KETOAN', 'HDV')")
+    // UC24 - Tra cứu khách hàng: Tìm hồ sơ khách hàng
     public ResponseEntity<ApiResponse<Page<HoChieuSoResponse>>> timKiemKhachHang(
             @RequestParam(required = false) String hoTen,
             @RequestParam(required = false) String email,
@@ -239,18 +226,18 @@ public class NhanVienController {
      */
     @GetMapping("/api/kinh-doanh/khach-hang/{maKhachHang}")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC24 - Tra cứu khách hàng: Xem chi tiết hồ sơ
     public ResponseEntity<ApiResponse<HoChieuSoResponse>> chiTietKhachHang(
             @PathVariable String maKhachHang) {
         return ResponseEntity.ok(ApiResponse.ok(nhanVienService.chiTietKhachHang(maKhachHang)));
     }
-
-    // ──────────────── UC34: SALES xem đơn đặt tour ───────────────────────
 
     /**
      * Xem danh sách đơn đặt tour cho kinh doanh.
      */
     @GetMapping("/api/kinh-doanh/don-dat-tour")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC34 - Tra cứu đơn hàng: Lọc đơn đặt tour
     public ResponseEntity<ApiResponse<Page<DonDatTourResponse>>> danhSachDonDatTour(
             @RequestParam(required = false) String trangThai,
             @RequestParam(required = false) String maTourThucTe,
@@ -258,13 +245,12 @@ public class NhanVienController {
         return ResponseEntity.ok(ApiResponse.ok(datTourService.danhSachTatCa(trangThai, maTourThucTe, pageable)));
     }
 
-    // ──────────────── UC41: SALES xử lý yêu cầu hỗ trợ / khiếu nại ─────────
-
     /**
      * Xem danh sách yêu cầu hỗ trợ.
      */
     @GetMapping("/api/kinh-doanh/yeu-cau-ho-tro")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Lọc yêu cầu hỗ trợ
     public ResponseEntity<ApiResponse<Page<YeuCauHoTroResponse>>> danhSachYeuCauHoTro(
             @RequestParam(required = false) String loaiYeuCau,
             @RequestParam(required = false) String trangThai,
@@ -278,6 +264,7 @@ public class NhanVienController {
      */
     @PutMapping("/api/kinh-doanh/yeu-cau-ho-tro/{maYeuCau}")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Cập nhật kết quả xử lý
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> xuLyYeuCauHoTro(
             @PathVariable String maYeuCau,
             @Valid @RequestBody XuLyHoTroRequest request,
@@ -288,6 +275,7 @@ public class NhanVienController {
 
     @PostMapping("/api/kinh-doanh/yeu-cau-ho-tro/{maYeuCau}/yeu-cau-hdv-giai-trinh")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Yêu cầu HDV giải trình
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> yeuCauHdvGiaiTrinh(
             @PathVariable String maYeuCau,
             @Valid @RequestBody BoSungRequest request) {
@@ -297,6 +285,7 @@ public class NhanVienController {
 
     @PostMapping("/api/kinh-doanh/yeu-cau-ho-tro/{maYeuCau}/yeu-cau-khach-hang-bo-sung")
     @PreAuthorize("hasAnyRole('KINHDOANH', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Yêu cầu khách bổ sung
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> yeuCauKhachHangBoSung(
             @PathVariable String maYeuCau,
             @Valid @RequestBody BoSungRequest request) {
@@ -306,6 +295,7 @@ public class NhanVienController {
 
     @GetMapping("/api/huong-dan-vien/yeu-cau-giai-trinh")
     @PreAuthorize("hasAnyRole('HDV', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: Lấy yêu cầu HDV cần giải trình
     public ResponseEntity<ApiResponse<List<YeuCauHoTroResponse>>> danhSachYeuCauGiaiTrinh(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         return ResponseEntity.ok(ApiResponse.ok(
@@ -314,6 +304,7 @@ public class NhanVienController {
 
     @PutMapping("/api/huong-dan-vien/yeu-cau-giai-trinh/{maYeuCau}")
     @PreAuthorize("hasAnyRole('HDV', 'ADMIN')")
+    // UC39 - Giải quyết khiếu nại: HDV gửi giải trình
     public ResponseEntity<ApiResponse<YeuCauHoTroResponse>> hdvCapNhatGiaiTrinh(
             @PathVariable String maYeuCau,
             @Valid @RequestBody BoSungRequest request,
@@ -325,6 +316,7 @@ public class NhanVienController {
 
     @GetMapping("/api/huong-dan-vien/quyet-toan/can-bo-sung")
     @PreAuthorize("hasAnyRole('HDV', 'ADMIN')")
+    // UC48 - Quyết toán tour: Lấy yêu cầu bổ sung quyết toán
     public ResponseEntity<ApiResponse<List<QuyetToanResponse>>> danhSachQuyetToanCanBoSung(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         return ResponseEntity.ok(ApiResponse.ok(
@@ -333,6 +325,7 @@ public class NhanVienController {
 
     @PutMapping("/api/huong-dan-vien/quyet-toan/{maQuyetToan}/bo-sung")
     @PreAuthorize("hasAnyRole('HDV', 'ADMIN')")
+    // UC48 - Quyết toán tour: HDV bổ sung chứng từ
     public ResponseEntity<ApiResponse<QuyetToanResponse>> hdvBoSungQuyetToan(
             @PathVariable String maQuyetToan,
             @Valid @RequestBody BoSungQuyetToanRequest request,
@@ -345,13 +338,12 @@ public class NhanVienController {
                         request.getHoaDonAnh())));
     }
 
-    // ──────────────── UC63: Năng lực & Hồ sơ HDV ───────────────────────────
-
     /**
      * Xem hồ sơ cá nhân của hướng dẫn viên.
      */
     @GetMapping("/api/huong-dan-vien/ho-so")
     @PreAuthorize("hasAnyRole('HDV', 'DIEUHANH', 'ADMIN')")
+    // UC63 - Cập nhật năng lực nhân viên: Xem hồ sơ nhân viên
     public ResponseEntity<ApiResponse<NhanVienResponse>> hoSoCaNhan(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         String maTaiKhoan = user.getTaiKhoan().getMaTaiKhoan();
@@ -363,6 +355,7 @@ public class NhanVienController {
      */
     @GetMapping("/api/huong-dan-vien/nang-luc")
     @PreAuthorize("hasAnyRole('HDV', 'DIEUHANH', 'ADMIN')")
+    // UC63 - Cập nhật năng lực nhân viên: Xem năng lực cá nhân
     public ResponseEntity<ApiResponse<NangLucResponse>> nangLucCuaToi(
             @AuthenticationPrincipal TaiKhoanDetails user) {
         String maTaiKhoan = user.getTaiKhoan().getMaTaiKhoan();
@@ -376,6 +369,7 @@ public class NhanVienController {
      */
     @GetMapping("/api/dieu-hanh/nhan-vien/{maNhanVien}/nang-luc")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC63 - Cập nhật năng lực nhân viên: Xem năng lực nhân viên
     public ResponseEntity<ApiResponse<NangLucResponse>> nangLucNhanVien(
             @PathVariable String maNhanVien) {
         return ResponseEntity.ok(ApiResponse.ok(nangLucService.layNangLuc(maNhanVien)));
@@ -386,6 +380,7 @@ public class NhanVienController {
      */
     @PutMapping("/api/dieu-hanh/nhan-vien/{maNhanVien}/nang-luc")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC63 - Cập nhật năng lực nhân viên: Lưu năng lực nhân viên
     public ResponseEntity<ApiResponse<NangLucResponse>> capNhatNangLuc(
             @PathVariable String maNhanVien,
             @Valid @RequestBody NangLucRequest request,
@@ -394,13 +389,12 @@ public class NhanVienController {
                 nangLucService.capNhatNangLuc(maNhanVien, request, user.getUsername())));
     }
 
-    // ──────────────── UC69: Gán vai trò ──────────────────────────────────
-
     /**
      * Gán vai trò cho nhân viên.
      */
     @PutMapping("/api/quan-tri/nhan-vien/{maNhanVien}/vai-tro")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    // UC67 - Phân quyền truy cập: Gán vai trò nhân viên
     public ResponseEntity<ApiResponse<NhanVienResponse>> ganVaiTro(
             @PathVariable String maNhanVien,
             @Valid @RequestBody GanVaiTroRequest request) {

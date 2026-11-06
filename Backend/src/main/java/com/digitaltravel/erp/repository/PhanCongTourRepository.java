@@ -21,6 +21,7 @@ public interface PhanCongTourRepository extends JpaRepository<PhanCongTour, Stri
             WHERE pc.tourThucTe.MaTourThucTe = :maTour
               AND pc.TrangThaiChapNhan = 'DA_DONG_Y'
             """)
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy phân công đang hoạt động
     List<PhanCongTour> findActiveByMaTour(@Param("maTour") String maTour);
 
     // HDV xem yêu cầu phân công và tour đã nhận, không trả về yêu cầu đã từ chối.
@@ -32,6 +33,7 @@ public interface PhanCongTourRepository extends JpaRepository<PhanCongTour, Stri
               AND pc.TrangThaiChapNhan <> 'TU_CHOI'
             ORDER BY tt.NgayKhoiHanh DESC
             """)
+    // UC40 - Xem lịch trình và thông tin đoàn: Lấy tour theo HDV
     List<PhanCongTour> findByMaNhanVien(@Param("maNhanVien") String maNhanVien);
 
     @Query("""
@@ -45,6 +47,7 @@ public interface PhanCongTourRepository extends JpaRepository<PhanCongTour, Stri
             WHERE pc.tourThucTe.MaTourThucTe = :maTourThucTe
               AND pc.TrangThaiChapNhan = 'DA_DONG_Y'
             """)
+    // UC37 - Điều phối HDV: Kiểm tra tour đã có HDV nhận
     boolean existsAcceptedByTourThucTe_MaTourThucTe(@Param("maTourThucTe") String maTourThucTe);
 
     @Query("""
@@ -53,6 +56,7 @@ public interface PhanCongTourRepository extends JpaRepository<PhanCongTour, Stri
               AND pc.nhanVien.taiKhoan.MaTaiKhoan = :maTaiKhoan
               AND pc.TrangThaiChapNhan = 'DA_DONG_Y'
             """)
+    // UC40 - Xem lịch trình và thông tin đoàn: Kiểm tra quyền xem tour
     boolean existsByMaTourAndMaTaiKhoan(
             @Param("maTour") String maTour,
             @Param("maTaiKhoan") String maTaiKhoan
@@ -64,6 +68,7 @@ public interface PhanCongTourRepository extends JpaRepository<PhanCongTour, Stri
               AND pc.nhanVien.taiKhoan.MaTaiKhoan = :maTaiKhoan
               AND pc.TrangThaiChapNhan <> 'TU_CHOI'
             """)
+    // UC40 - Xem lịch trình và thông tin đoàn: Kiểm tra tour có thể xem
     boolean existsViewableByMaTourAndMaTaiKhoan(
             @Param("maTour") String maTour,
             @Param("maTaiKhoan") String maTaiKhoan
@@ -88,6 +93,7 @@ public interface PhanCongTourRepository extends JpaRepository<PhanCongTour, Stri
                     AND :ngayKhoiHanh < tt.NgayKhoiHanh + tm.ThoiLuong + (12/24)
               )
             """, nativeQuery = true)
+    // UC38 - Tra cứu HDV: Tìm HDV không trùng lịch
     List<String> findMaNhanVienKhaDung(
             @Param("ngayKhoiHanh") LocalDate ngayKhoiHanh,
             @Param("ngayKetThuc") LocalDate ngayKetThuc

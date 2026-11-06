@@ -27,7 +27,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
- * UC51 — Controller trích xuất dữ liệu phân tích (Power BI).
+ * Controller trích xuất dữ liệu phân tích (Power BI).
  * <p>
  * Tách riêng khỏi QuyetToanController để rõ ràng, dễ bảo trì.
  * Tất cả endpoint yêu cầu role KETOAN hoặc ADMIN.
@@ -40,22 +40,16 @@ public class PowerBiController {
 
     private final PowerBiService powerBiService;
 
-    /**
-     * UC51 Bước 2 — Danh sách kho dữ liệu khả dụng.
-     */
     @GetMapping("/kho-du-lieu")
     @PreAuthorize("hasAnyRole('KETOAN', 'ADMIN')")
+    // UC51 - Trích xuất dữ liệu phân tích: Lấy kho dữ liệu
     public ResponseEntity<ApiResponse<List<PowerBiKhoDuLieuResponse>>> danhSachKhoDuLieu() {
         return ResponseEntity.ok(ApiResponse.ok(powerBiService.danhSachKhoDuLieu()));
     }
 
-    /**
-     * UC51 Bước 3-6 — Lấy thông tin kết nối Oracle (tạo user DB tạm read-only).
-     *
-     * @param maKho mã kho dữ liệu (DOANH_THU, DON_DAT_TOUR, CHI_PHI, TOUR, GIAO_DICH)
-     */
     @GetMapping("/ket-noi")
     @PreAuthorize("hasAnyRole('KETOAN', 'ADMIN')")
+    // UC51 - Trích xuất dữ liệu phân tích: Cấp thông tin kết nối
     public ResponseEntity<ApiResponse<PowerBiKetNoiResponse>> layThongTinKetNoi(
             @RequestParam String maKho,
             @AuthenticationPrincipal TaiKhoanDetails user) {
@@ -63,12 +57,9 @@ public class PowerBiController {
         return ResponseEntity.ok(ApiResponse.ok("Thông tin kết nối Power BI", result));
     }
 
-    /**
-     * UC51 Luồng phụ 4a — Xuất dữ liệu thành file Excel/CSV.
-     * Trả file download trực tiếp (không wrap trong ApiResponse).
-     */
     @PostMapping("/xuat-du-lieu")
     @PreAuthorize("hasAnyRole('KETOAN', 'ADMIN')")
+    // UC51 - Trích xuất dữ liệu phân tích: Xuất tập dữ liệu
     public ResponseEntity<byte[]> xuatDuLieu(
             @Valid @RequestBody XuatDuLieuRequest request,
             @AuthenticationPrincipal TaiKhoanDetails user) {

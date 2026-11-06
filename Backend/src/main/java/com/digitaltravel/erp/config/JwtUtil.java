@@ -30,6 +30,7 @@ public class JwtUtil {
         this.expiration = expiration;
     }
 
+    // UC57 - Đăng nhập: Sinh token truy cập
     public String generateToken(UserDetails userDetails) {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(a -> a.getAuthority())
@@ -52,10 +53,12 @@ public class JwtUtil {
         return builder.signWith(secretKey).compact();
     }
 
+    // UC57 - Đăng nhập: Đọc tài khoản từ token
     public String extractUsername(String token) {
         return parseClaims(token).getSubject();
     }
 
+    // UC67 - Phân quyền truy cập: Đọc vai trò từ token
     public String extractRole(String token) {
         Claims claims = parseClaims(token);
         String roleStr = null;
@@ -83,6 +86,7 @@ public class JwtUtil {
         return normalizedRole;
     }
 
+    // UC57 - Đăng nhập: Kiểm tra token hợp lệ
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
@@ -110,6 +114,7 @@ public class JwtUtil {
     /**
      * Sinh token de dat lai mat khau. Token co hieu luc 15 phut.
      */
+    // UC59 - Quên mật khẩu: Sinh token đặt lại mật khẩu
     public String generateResetToken(String tenDangNhap) {
         return Jwts.builder()
                 .subject(tenDangNhap)
@@ -124,6 +129,7 @@ public class JwtUtil {
      * Xac thuc reset token va tra ve tenDangNhap neu hop le.
      * Nem AppException.badRequest neu sai/het han/sai purpose.
      */
+    // UC59 - Quên mật khẩu: Đọc tài khoản từ token đặt lại
     public String extractResetSubject(String token) {
         try {
             Claims claims = parseClaims(token);

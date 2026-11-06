@@ -26,12 +26,9 @@ public class ThanhToanController {
 
     private final ThanhToanService thanhToanService;
 
-    /**
-     * UC29 — Khởi tạo giao dịch thanh toán.
-     * Truyền mock=true để bypass MoMo trong dev/test.
-     */
     @PostMapping("/khoi-tao")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC29 - Thanh toán đơn hàng: Khởi tạo giao dịch
     public ResponseEntity<ApiResponse<ThanhToanResponse>> khoiTaoThanhToan(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @Valid @RequestBody KhoiTaoThanhToanRequest request) {
@@ -42,6 +39,7 @@ public class ThanhToanController {
 
     @PostMapping("/{maDatTour}/het-han-qr")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC29 - Thanh toán đơn hàng: Ghi nhận QR hết hạn
     public ResponseEntity<ApiResponse<Void>> hetHanThanhToanQr(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maDatTour) {
@@ -52,6 +50,7 @@ public class ThanhToanController {
 
     @PostMapping("/{maDatTour}/xac-nhan-chuyen-khoan")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC29 - Thanh toán đơn hàng: Khách xác nhận chuyển khoản
     public ResponseEntity<ApiResponse<Void>> xacNhanDaChuyenKhoan(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maDatTour) {
@@ -65,6 +64,7 @@ public class ThanhToanController {
      */
     @GetMapping("/{maDatTour}/ket-qua")
     @PreAuthorize("hasAnyRole('KHACHHANG', 'ADMIN')")
+    // UC29 - Thanh toán đơn hàng: Tra cứu kết quả giao dịch
     public ResponseEntity<ApiResponse<ThanhToanResponse>> ketQua(
             @AuthenticationPrincipal TaiKhoanDetails user,
             @PathVariable String maDatTour) {

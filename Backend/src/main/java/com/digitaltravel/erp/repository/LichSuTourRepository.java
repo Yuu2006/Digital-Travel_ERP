@@ -14,7 +14,7 @@ import com.digitaltravel.erp.entity.LichSuTour;
 @Repository
 public interface LichSuTourRepository extends JpaRepository<LichSuTour, String> {
 
-    // UC22: Lịch sử tour của khách hàng
+    // UC22 - Xem chi tiết lịch sử hành trình: Lấy lịch sử tour của khách hàng
     @Query("""
             SELECT lst FROM LichSuTour lst
             JOIN FETCH lst.tourThucTe ttt

@@ -19,6 +19,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
+    // UC57 - Đăng nhập: Từ chối yêu cầu chưa xác thực
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {

@@ -49,8 +49,8 @@ public class TourThucTeService {
     private final HdxTourThucTeRepository hdxTourThucTeRepository;
     private final MaTuDongService maTuDongService;
 
-    // ── UC14: Danh sách tour thực tế (nội bộ - có filter) ───────────────────
     @Transactional(readOnly = true)
+    // UC14 - Tra cứu tour thực tế: Lọc tour thực tế nội bộ
     public Page<TourThucTeResponse> danhSach(String trangThai, String maTourMau,
                                               java.math.BigDecimal giaTu, java.math.BigDecimal giaDen,
                                               Pageable pageable) {
@@ -58,8 +58,8 @@ public class TourThucTeService {
                 .map(this::toResponse);
     }
 
-    // ── UC14: Danh sách tour thực tế (công khai cho KH) ─────────────────────
     @Transactional(readOnly = true)
+    // UC25 - Tra cứu tour: Lọc tour công khai
     public Page<TourThucTeResponse> danhSachCongKhai(java.math.BigDecimal giaTu, java.math.BigDecimal giaDen,
                                                       Integer thoiLuongMin, Integer thoiLuongMax,
                                                       Pageable pageable) {
@@ -68,21 +68,22 @@ public class TourThucTeService {
     }
 
     @Transactional(readOnly = true)
+    // UC37 - Điều phối HDV: Lấy tour cần phân công
     public Page<TourThucTeResponse> danhSachCanPhanCong(Pageable pageable) {
         return tourThucTeRepository.findChoKichHoatChuaPhanCong(pageable)
                 .map(this::toResponse);
     }
 
-    // ── UC14: Chi tiết tour thực tế ─────────────────────────────────────────
     @Transactional(readOnly = true)
+    // UC14 - Tra cứu tour thực tế: Xem chi tiết tour
     public TourThucTeResponse chiTiet(String id) {
         TourThucTe ttt = tourThucTeRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour thuc te: " + id));
         return toResponse(ttt);
     }
 
-    // ── UC26: Chi tiết tour công khai kèm lịch trình ────────────────────────
     @Transactional(readOnly = true)
+    // UC26 - Xem chi tiết tour: Lấy chi tiết tour công khai
     public TourCongKhaiResponse chiTietCongKhai(String id) {
         TourThucTe ttt = tourThucTeRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour: " + id));
@@ -118,8 +119,8 @@ public class TourThucTeService {
                 .build();
     }
 
-    // ── UC11: Khởi tạo tour thực tế từ tour mẫu ────────────────────────────
     @Transactional
+    // UC11 - Khởi tạo tour thực tế từ tour mẫu: Tạo chuyến tour
     public TourThucTeResponse taoMoi(TaoTourThucTeRequest request, String nguoiTao) {
         TourMau tourMau = tourMauRepository.findById(request.getMaTourMau())
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + request.getMaTourMau()));
@@ -159,8 +160,8 @@ public class TourThucTeService {
         return toResponse(ttt);
     }
 
-    // ── UC13: Sửa tour thực tế ──────────────────────────────────────────────
     @Transactional
+    // UC13 - Sửa tour thực tế: Cập nhật chuyến tour
     public TourThucTeResponse capNhat(String id, CapNhatTourThucTeRequest request, String nguoiCapNhat) {
         TourThucTe ttt = tourThucTeRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour thuc te: " + id));
@@ -200,8 +201,8 @@ public class TourThucTeService {
         return toResponse(ttt);
     }
 
-    // ── UC12: Xóa tour thực tế ──────────────────────────────────────────────
     @Transactional
+    // UC12 - Xóa tour thực tế: Hủy chuyến tour
     public void xoa(String id) {
         TourThucTe ttt = tourThucTeRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour thuc te: " + id));

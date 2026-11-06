@@ -37,6 +37,7 @@ public class TaiKhoanAdminController {
 
     @PostMapping("/dang-ky-nhan-vien")
     @Transactional
+    // UC62 - Tạo tài khoản nhân viên: Khởi tạo tài khoản nội bộ
     public ResponseEntity<ApiResponse<Void>> dangKyNhanVien(@Valid @RequestBody DangKyNhanVienRequest request) {
         String maVaiTro = request.getMaVaiTro().toUpperCase();
 

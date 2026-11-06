@@ -32,6 +32,7 @@ public class TourThucTeScheduler {
 
     @Scheduled(cron = "0 0 * * * *") // Mỗi đầu giờ
     @Transactional
+    // UC25 - Tra cứu tour: Cập nhật giá động tour công khai
     public void capNhatGiaDong() {
         List<TourThucTe> tours = tourThucTeRepository.findForDynamicPricing();
         LocalDate today = LocalDate.now();

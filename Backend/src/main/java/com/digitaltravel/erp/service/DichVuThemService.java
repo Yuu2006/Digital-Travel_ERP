@@ -22,10 +22,12 @@ public class DichVuThemService {
     private final DichVuTourThucTeRepository dichVuTourThucTeRepository;
     private final MaTuDongService maTuDongService;
 
+    // UC19 - Tra cứu dịch vụ: Lấy toàn bộ dịch vụ
     public List<DichVuThemResponse> danhSach() {
         return danhSach(null);
     }
 
+    // UC27 - Đặt tour: Lấy dịch vụ theo tour
     public List<DichVuThemResponse> danhSach(String maTourThucTe) {
         if (maTourThucTe != null && !maTourThucTe.isBlank()) {
             return dichVuTourThucTeRepository.findByMaTourThucTe(maTourThucTe).stream()
@@ -37,6 +39,7 @@ public class DichVuThemService {
                 .toList();
     }
 
+    // UC19 - Tra cứu dịch vụ: Xem chi tiết dịch vụ
     public DichVuThemResponse chiTiet(String id) {
         DichVuThem dv = dichVuThemRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay dich vu: " + id));
@@ -44,6 +47,7 @@ public class DichVuThemService {
     }
 
     @Transactional
+    // UC16 - Thêm dịch vụ: Tạo dịch vụ bổ sung
     public DichVuThemResponse taoMoi(DichVuThemRequest request) {
         DichVuThem dv = new DichVuThem();
         dv.setMaDichVuThem(maTuDongService.taoMaDichVuThem());
@@ -55,6 +59,7 @@ public class DichVuThemService {
     }
 
     @Transactional
+    // UC17 - Sửa thông tin dịch vụ: Cập nhật dịch vụ
     public DichVuThemResponse capNhat(String id, DichVuThemRequest request) {
         DichVuThem dv = dichVuThemRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay dich vu: " + id));
@@ -67,6 +72,7 @@ public class DichVuThemService {
     }
 
     @Transactional
+    // UC18 - Xóa dịch vụ: Loại bỏ dịch vụ
     public void xoa(String id) {
         DichVuThem dv = dichVuThemRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay dich vu: " + id));

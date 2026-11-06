@@ -27,6 +27,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
             SELECT COUNT(d) FROM DonDatTour d
             WHERE d.khachHang.MaKhachHang = :maKhachHang
             """)
+    // UC22 - Xem chi tiết lịch sử hành trình: Lấy đơn theo khách hàng
     Page<DonDatTour> findByMaKhachHang(@Param("maKhachHang") String maKhachHang, Pageable pageable);
 
     // Lấy chi tiết đơn đặt tour đảm bảo thuộc về khách hàng đang đăng nhập (chống IDOR)
@@ -37,6 +38,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
             WHERE d.maDatTour = :maDatTour
               AND d.khachHang.MaKhachHang = :maKhachHang
             """)
+    // UC22 - Xem chi tiết lịch sử hành trình: Lấy đơn đúng chủ sở hữu
     Optional<DonDatTour> findByIdAndMaKhachHang(
             @Param("maDatTour") String maDatTour,
             @Param("maKhachHang") String maKhachHang
@@ -69,6 +71,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
             WHERE (:trangThai IS NULL OR d.trangThai = :trangThai)
               AND (:maTourThucTe IS NULL OR d.tourThucTe.MaTourThucTe = :maTourThucTe)
             """)
+    // UC34 - Tra cứu đơn hàng: Lọc đơn cho nhân viên
     Page<DonDatTour> timKiem(
             @Param("trangThai") String trangThai,
             @Param("maTourThucTe") String maTourThucTe,
@@ -77,6 +80,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
 
     // Dùng cho Scheduler: lấy đơn CHO_XAC_NHAN đã hết hạn giữ chỗ
     @Query("SELECT d FROM DonDatTour d WHERE d.trangThai = :trangThai AND d.thoiGianHetHan < :thoiGian")
+    // UC27 - Đặt tour: Tìm đơn quá hạn giữ chỗ
     List<DonDatTour> findAllByTrangThaiAndThoiGianHetHanBefore(
             @Param("trangThai") String trangThai,
             @Param("thoiGian") LocalDateTime thoiGian
@@ -90,6 +94,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
             JOIN FETCH d.khachHang
             WHERE d.maDatTour = :maDatTour
             """)
+    // UC29 - Thanh toán đơn hàng: Lấy đơn kèm thông tin thanh toán
     Optional<DonDatTour> findByIdWithDetails(@Param("maDatTour") String maDatTour);
 
     // Dem so don dat tour trong khoang thoi gian theo ngay dat (bao cao)
@@ -104,6 +109,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
             WHERE d.tourThucTe.MaTourThucTe = :maTourThucTe
               AND d.trangThai NOT IN ('DA_HUY', 'HET_HAN_GIU_CHO', 'THANH_TOAN_THAT_BAI')
             """)
+    // UC12 - Xóa tour thực tế: Đếm đơn đang giữ chỗ
     long countBlockingBookingsByTourThucTe(@Param("maTourThucTe") String maTourThucTe);
 
     @Query("""
@@ -112,6 +118,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
             WHERE d.tourThucTe.MaTourThucTe = :maTourThucTe
               AND d.trangThai = 'DA_XAC_NHAN'
             """)
+    // UC37 - Điều phối HDV: Đếm khách đã xác nhận
     long countConfirmedPassengersByTourThucTe(@Param("maTourThucTe") String maTourThucTe);
 
     @Query("""
@@ -120,12 +127,12 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
               AND d.khachHang.MaKhachHang = :maKhachHang
               AND d.trangThai = 'DA_XAC_NHAN'
             """)
+    // UC35 - Đánh giá: Kiểm tra khách đã tham gia tour
     boolean existsConfirmedKhachHangInTour(
             @Param("maTourThucTe") String maTourThucTe,
             @Param("maKhachHang") String maKhachHang
     );
 
-    // UC51: Xuất dữ liệu đơn đặt tour cho Power BI
     @Query("""
             SELECT d FROM DonDatTour d
             JOIN FETCH d.tourThucTe ttt
@@ -134,6 +141,7 @@ public interface DonDatTourRepository extends JpaRepository<DonDatTour, String> 
               AND (:denNgay IS NULL OR d.ngayDat < :denNgay)
             ORDER BY d.ngayDat DESC
             """)
+    // UC51 - Trích xuất dữ liệu phân tích: Xuất dữ liệu đơn đặt tour
     java.util.List<DonDatTour> xuatDuLieu(
             @Param("tuNgay") LocalDateTime tuNgay,
             @Param("denNgay") LocalDateTime denNgay

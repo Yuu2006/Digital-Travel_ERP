@@ -43,7 +43,8 @@ public class ChiPhiThucTe {
     BigDecimal ThanhTien;
 
     // URL anh chup hoa don goc
-    @Column(name = "HoaDonAnh", length = 1000)
+    @jakarta.persistence.Lob
+    @Column(name = "HoaDonAnh")
     String HoaDonAnh;
 
     // Gia tri hop le: CHO_DUYET | DA_DUYET | TU_CHOI

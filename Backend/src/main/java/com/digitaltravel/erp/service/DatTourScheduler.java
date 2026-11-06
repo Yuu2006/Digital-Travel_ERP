@@ -36,6 +36,7 @@ public class DatTourScheduler {
 
     @Scheduled(fixedDelay = 60_000)
     @Transactional
+    // UC27 - Đặt tour: Tự động hủy đơn quá hạn giữ chỗ
     public void huyDonHetHan() {
         List<DonDatTour> donHetHan = donDatTourRepository
                 .findAllByTrangThaiAndThoiGianHetHanBefore("CHO_XAC_NHAN", LocalDateTime.now());
@@ -61,6 +62,7 @@ public class DatTourScheduler {
 
     @Scheduled(fixedDelay = 60_000)
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Đánh dấu QR quá hạn
     public void danhDauQrHetHan() {
         List<GiaoDich> giaoDichHetHan = giaoDichRepository.findQrChoThanhToanQuaHan(
                 LocalDateTime.now().minusMinutes(THOI_HAN_QR_PHUT));

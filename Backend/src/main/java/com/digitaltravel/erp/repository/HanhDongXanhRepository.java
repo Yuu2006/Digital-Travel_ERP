@@ -14,6 +14,16 @@ public interface HanhDongXanhRepository extends JpaRepository<HanhDongXanh, Stri
 
   @Query("""
       select hdx from HanhDongXanh hdx
+      where not exists (
+          select 1 from HdxTourThucTe link
+          where link.hanhDongXanh = hdx
+      )
+      order by hdx.MaHanhDongXanh
+      """)
+  List<HanhDongXanh> findCommonActions();
+
+  @Query("""
+      select hdx from HanhDongXanh hdx
       where exists (
           select 1 from HdxTourThucTe link
           where link.hanhDongXanh = hdx

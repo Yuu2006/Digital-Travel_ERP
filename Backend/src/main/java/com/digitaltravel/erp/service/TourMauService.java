@@ -31,14 +31,14 @@ public class TourMauService {
     private final TourThucTeRepository tourThucTeRepository;
     private final MaTuDongService maTuDongService;
 
-    // ── UC06: Danh sách tour mẫu (filter + phân trang) ──────────────────────
+    // UC06 - Tra cứu tour mẫu: Lọc tour mẫu
     public Page<TourMauResponse> danhSach(String tieuDe, Integer thoiLuongMin, Integer thoiLuongMax,
                                            Pageable pageable) {
         return tourMauRepository.timKiem(tieuDe, thoiLuongMin, thoiLuongMax, pageable)
                 .map(this::toResponse);
     }
 
-    // ── UC06: Chi tiết tour mẫu + lịch trình ────────────────────────────────
+    // UC06 - Tra cứu tour mẫu: Xem chi tiết tour mẫu
     public TourMauChiTietResponse chiTiet(String id) {
         TourMau tm = tourMauRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + id));
@@ -46,8 +46,8 @@ public class TourMauService {
         return toChiTietResponse(tm, lichTrinh);
     }
 
-    // ── UC02: Thêm tour mẫu ─────────────────────────────────────────────────
     @Transactional
+    // UC02 - Thêm mới tour mẫu: Lưu tour mẫu
     public TourMauChiTietResponse taoMoi(TaoTourMauRequest request, String nguoiTao) {
         TourMau tm = new TourMau();
         tm.setMaTourMau(maTuDongService.taoMaTourMau());
@@ -80,8 +80,8 @@ public class TourMauService {
         return toChiTietResponse(tm, lichTrinh);
     }
 
-    // ── UC04: Sửa tour mẫu ──────────────────────────────────────────────────
     @Transactional
+    // UC04 - Sửa thông tin tour mẫu: Cập nhật tour mẫu
     public TourMauResponse capNhat(String id, CapNhatTourMauRequest request, String nguoiCapNhat) {
         TourMau tm = tourMauRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + id));
@@ -94,8 +94,8 @@ public class TourMauService {
         return toResponse(tm);
     }
 
-    // ── UC05: Xóa mềm tour mẫu ─────────────────────────────────────────────
     @Transactional
+    // UC05 - Xóa tour mẫu: Xóa mềm tour mẫu
     public void xoaMem(String id) {
         TourMau tm = tourMauRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + id));
@@ -108,8 +108,8 @@ public class TourMauService {
         tourMauRepository.delete(tm);
     }
 
-    // ── UC03: Sao chép tour mẫu ─────────────────────────────────────────────
     @Transactional
+    // UC03 - Sao chép tour mẫu: Nhân bản tour mẫu
     public TourMauChiTietResponse saoChep(String id, String nguoiTao) {
         TourMau goc = tourMauRepository.findById(id)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + id));
@@ -143,8 +143,8 @@ public class TourMauService {
         return toChiTietResponse(banSao, lichTrinhMoi);
     }
 
-    // ── UC08: Thêm ngày lịch trình ──────────────────────────────────────────
     @Transactional
+    // UC08 - Thêm lịch trình tour: Lưu ngày lịch trình
     public LichTrinhResponse themLichTrinh(String maTourMau, LichTrinhRequest request) {
         TourMau tm = tourMauRepository.findById(maTourMau)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + maTourMau));
@@ -163,8 +163,8 @@ public class TourMauService {
         return toLichTrinhResponse(lt);
     }
 
-    // ── UC09: Sửa lịch trình ────────────────────────────────────────────────
     @Transactional
+    // UC09 - Sửa lịch trình tour: Cập nhật ngày lịch trình
     public LichTrinhResponse suaLichTrinh(String maTourMau, String maLichTrinh, LichTrinhRequest request) {
         tourMauRepository.findById(maTourMau)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay tour mau: " + maTourMau));
@@ -196,8 +196,8 @@ public class TourMauService {
         return toLichTrinhResponse(lt);
     }
 
-    // ── UC09: Xóa ngày lịch trình ───────────────────────────────────────────
     @Transactional
+    // UC09 - Sửa lịch trình tour: Xóa ngày lịch trình
     public void xoaLichTrinh(String maTourMau, String maLichTrinh) {
         LichTrinhTour lt = lichTrinhTourRepository.findById(maLichTrinh)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay lich trinh: " + maLichTrinh));

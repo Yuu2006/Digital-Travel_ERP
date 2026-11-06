@@ -16,6 +16,7 @@ public interface YeuCauHoTroRepository extends JpaRepository<YeuCauHoTro, String
 
     // Lấy yêu cầu hoàn tiền của 1 đơn đặt tour
     @Query("SELECT y FROM YeuCauHoTro y WHERE y.donDatTour.maDatTour = :maDatTour AND y.LoaiYeuCau = :loaiYeuCau")
+    // UC36 - Khiếu nại: Tìm yêu cầu theo đơn và loại
     List<YeuCauHoTro> findByMaDatTourAndLoaiYeuCau(
             @Param("maDatTour") String maDatTour,
             @Param("loaiYeuCau") String loaiYeuCau
@@ -29,6 +30,7 @@ public interface YeuCauHoTroRepository extends JpaRepository<YeuCauHoTro, String
               AND y.TrangThai IN ('CHUA_XU_LY', 'CHO_BO_SUNG', 'CHO_GIAI_TRINH', 'CHO_DUYET')
               AND y.donDatTour.tourThucTe.MaTourThucTe = :maTourThucTe
             """)
+    // UC36 - Khiếu nại: Kiểm tra khiếu nại đang xử lý
     boolean existsActiveKhieuNaiByKhachHangAndTour(
             @Param("maKhachHang") String maKhachHang,
             @Param("maTourThucTe") String maTourThucTe
@@ -43,6 +45,7 @@ public interface YeuCauHoTroRepository extends JpaRepository<YeuCauHoTro, String
               AND (:trangThai IS NULL OR y.TrangThai = :trangThai)
             ORDER BY y.MaYeuCauHoTro DESC
             """)
+    // UC39 - Giải quyết khiếu nại: Lọc yêu cầu cho nhân viên
     Page<YeuCauHoTro> timKiem(
             @Param("loaiYeuCau") String loaiYeuCau,
             @Param("trangThai") String trangThai,
@@ -58,6 +61,7 @@ public interface YeuCauHoTroRepository extends JpaRepository<YeuCauHoTro, String
               AND (:loaiYeuCau IS NULL OR y.LoaiYeuCau = :loaiYeuCau)
             ORDER BY y.MaYeuCauHoTro DESC
             """)
+    // UC36 - Khiếu nại: Lọc yêu cầu của khách hàng
     Page<YeuCauHoTro> timKiemTheoKhachHang(
             @Param("maKhachHang") String maKhachHang,
             @Param("loaiYeuCau") String loaiYeuCau,
@@ -73,6 +77,7 @@ public interface YeuCauHoTroRepository extends JpaRepository<YeuCauHoTro, String
               AND y.TrangThai = 'CHO_BO_SUNG'
             ORDER BY y.MaYeuCauHoTro DESC
             """)
+    // UC39 - Giải quyết khiếu nại: Lấy yêu cầu HDV cần giải trình
     List<YeuCauHoTro> findYeuCauGiaiTrinhCuaHdv(@Param("maNhanVien") String maNhanVien);
 
     @Query("""
@@ -83,5 +88,6 @@ public interface YeuCauHoTroRepository extends JpaRepository<YeuCauHoTro, String
               AND y.TrangThai = 'CHO_BO_SUNG'
             ORDER BY y.MaYeuCauHoTro DESC
             """)
+    // UC39 - Giải quyết khiếu nại: Lấy yêu cầu khách cần bổ sung
     List<YeuCauHoTro> findYeuCauCanKhachHangBoSung(@Param("maKhachHang") String maKhachHang);
 }

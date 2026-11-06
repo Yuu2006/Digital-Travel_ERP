@@ -20,6 +20,7 @@ public class TaiKhoanDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
+    // UC57 - Đăng nhập: Nạp tài khoản để xác thực
     public UserDetails loadUserByUsername(String tenDangNhap) throws UsernameNotFoundException {
         TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhapWithVaiTro(tenDangNhap)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy tài khoản: " + tenDangNhap));

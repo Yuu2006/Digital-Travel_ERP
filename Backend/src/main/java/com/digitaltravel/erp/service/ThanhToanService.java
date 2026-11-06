@@ -43,8 +43,8 @@ public class ThanhToanService {
     @Value("${app.payment.mock-enabled:false}")
     private boolean mockEnabled;
 
-    // ── Khởi tạo thanh toán ────────────────────────────────────────────────
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Tạo giao dịch thanh toán
     public ThanhToanResponse khoiTaoThanhToan(String maTaiKhoan, KhoiTaoThanhToanRequest request) {
         DonDatTour don = donDatTourRepository.findByIdWithDetails(request.getMaDonDatTour())
                 .orElseThrow(() -> AppException.notFound("Khong tim thay don dat tour: " + request.getMaDonDatTour()));
@@ -112,6 +112,7 @@ public class ThanhToanService {
     }
 
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Xử lý QR hết hạn
     public void hetHanThanhToanQr(String maTaiKhoan, String maDatTour) {
         DonDatTour don = donDatTourRepository.findByIdWithDetails(maDatTour)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay don dat tour: " + maDatTour));
@@ -149,6 +150,7 @@ public class ThanhToanService {
     }
 
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Ghi nhận khách đã chuyển khoản
     public void xacNhanDaChuyenKhoan(String maTaiKhoan, String maDatTour) {
         DonDatTour don = donDatTourRepository.findByIdWithDetails(maDatTour)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay don dat tour: " + maDatTour));
@@ -181,6 +183,7 @@ public class ThanhToanService {
     }
 
     @Transactional
+    // UC29 - Thanh toán đơn hàng: Mô phỏng kết quả giao dịch
     protected ThanhToanResponse xuLyMock(DonDatTour don, String phuongThuc) {
         LocalDateTime now = LocalDateTime.now();
         String maGiaoDich = "GD_MOCK_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -240,7 +243,7 @@ public class ThanhToanService {
                 .build();
     }
 
-    // ── Kiểm tra kết quả giao dịch ────────────────────────────────────────
+    // UC29 - Thanh toán đơn hàng: Trả kết quả thanh toán
     public ThanhToanResponse ketQua(String maTaiKhoan, String maDatTour) {
         DonDatTour don = donDatTourRepository.findByIdWithDetails(maDatTour)
                 .orElseThrow(() -> AppException.notFound("Khong tim thay don dat tour: " + maDatTour));

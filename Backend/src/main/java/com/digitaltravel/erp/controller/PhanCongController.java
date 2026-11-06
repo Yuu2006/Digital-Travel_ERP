@@ -38,37 +38,32 @@ public class PhanCongController {
 
     @GetMapping("/tour-can-phan-cong")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC37 - Điều phối HDV: Lấy tour cần phân công
     public ResponseEntity<ApiResponse<Page<TourThucTeResponse>>> tourCanPhanCong(
             @PageableDefault(size = 10, sort = "NgayKhoiHanh", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(tourThucTeService.danhSachCanPhanCong(pageable)));
     }
 
-    /**
-     * UC38 — Danh sách HDV khả dụng cho 1 tour (không trùng lịch)
-     */
     @GetMapping("/hdv-kha-dung")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC38 - Tra cứu HDV: Lấy HDV khả dụng
     public ResponseEntity<ApiResponse<List<NhanVienResponse>>> hdvKhaDung(
             @RequestParam String maTourThucTe) {
         return ResponseEntity.ok(ApiResponse.ok(phanCongTourService.timHdvKhaDung(maTourThucTe)));
     }
 
-    /**
-     * UC37 — Phân công HDV vào tour
-     */
     @PostMapping("/phan-cong")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC37 - Điều phối HDV: Tạo phân công HDV
     public ResponseEntity<ApiResponse<PhanCongResponse>> phanCong(
             @Valid @RequestBody PhanCongHdvRequest request) {
         PhanCongResponse result = phanCongTourService.phanCong(request);
         return ResponseEntity.status(201).body(ApiResponse.created(result));
     }
 
-    /**
-     * UC37 — Hủy phân công
-     */
     @DeleteMapping("/phan-cong/{maPhanCong}")
     @PreAuthorize("hasAnyRole('DIEUHANH', 'ADMIN')")
+    // UC37 - Điều phối HDV: Hủy phân công HDV
     public ResponseEntity<ApiResponse<Void>> huyPhanCong(
             @PathVariable String maPhanCong) {
         phanCongTourService.huyPhanCong(maPhanCong);
